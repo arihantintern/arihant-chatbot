@@ -1,0 +1,87 @@
+/* ==========================================================================
+   ThemeToggle — a three-position segmented control
+   ========================================================================== */
+
+@layer components {
+  .theme-toggle {
+    /* A fieldset for the grouping semantics, with none of its chrome. */
+    border: none;
+    padding: 0;
+    min-inline-size: 0;
+  }
+
+  .theme-toggle__track {
+    position: relative;
+    display: inline-grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+
+    padding: var(--space-0-5);
+    background-color: var(--color-surface-sunken);
+    border: var(--border-hairline) solid var(--color-border-subtle);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-inset);
+  }
+
+  .theme-toggle__thumb {
+    position: absolute;
+    inset-block: var(--space-0-5);
+    inset-inline-start: var(--space-0-5);
+    inline-size: var(--toggle-size);
+
+    background-color: var(--color-surface);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-sm), var(--shadow-glint);
+
+    /* Slides by whole positions. `translate3d` keeps it on the compositor, so
+       the movement stays smooth next to a theme repaint of the whole page. */
+    transform: translate3d(calc(var(--active-index) * 100%), 0, 0);
+    transition: transform var(--duration-base) var(--ease-spring);
+  }
+
+  .theme-toggle__option {
+    position: relative;
+    z-index: 1; /* above the thumb */
+
+    display: grid;
+    place-items: center;
+    inline-size: var(--toggle-size);
+    block-size: var(--toggle-size);
+
+    border-radius: var(--radius-full);
+    color: var(--color-text-tertiary);
+    cursor: pointer;
+    transition: var(--transition-colors), var(--transition-transform);
+  }
+
+  .theme-toggle__option:hover {
+    color: var(--color-text-primary);
+  }
+
+  .theme-toggle__option:active {
+    transform: scale(0.92);
+    transition-duration: var(--duration-instant);
+  }
+
+  /* The selected one takes the brand colour; the thumb behind it is doing the
+     work of showing *which*. */
+  .theme-toggle__option:has(:checked) {
+    color: var(--color-brand);
+  }
+
+  /* The real input is visually hidden, so its focus ring has to be drawn by
+     the label around it — otherwise keyboard users get no ring at all. */
+  .theme-toggle__option:has(:focus-visible) {
+    outline: var(--focus-ring-width) solid var(--color-focus-ring);
+    outline-offset: 1px;
+  }
+
+  /* --- sizes ------------------------------------------------------------- */
+  .theme-toggle--md .theme-toggle__track {
+    --toggle-size: var(--control-height-sm);
+  }
+
+  .theme-toggle--sm .theme-toggle__track {
+    --toggle-size: var(--control-height-xs);
+  }
+}

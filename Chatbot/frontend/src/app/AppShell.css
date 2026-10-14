@@ -1,0 +1,81 @@
+/* ==========================================================================
+   AppShell — the signed-in chrome
+   --------------------------------------------------------------------------
+   A fixed bar over a main that takes exactly the rest of the viewport. The
+   page itself never scrolls; the conversation inside `<main>` does.
+
+   That is the whole reason `.shell__main` carries `min-block-size: 0`: a flex
+   child defaults to `min-height: auto` and will not shrink below its content,
+   so without it a long conversation would push the shell taller than the
+   window and take the composer off the bottom of the screen.
+   ========================================================================== */
+
+@layer layout {
+  .shell {
+    display: flex;
+    flex-direction: column;
+    /* dvh, not vh: on mobile `100vh` is the height with the address bar
+       hidden, which would put the composer permanently underneath it. */
+    block-size: 100dvh;
+    overflow: hidden;
+  }
+
+  /* --- top bar ----------------------------------------------------------- */
+  .shell__bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex: none;
+    z-index: var(--z-nav);
+
+    block-size: var(--height-topbar);
+    padding-inline: var(--gutter);
+
+    /* Frosted rather than solid: content scrolling under the bar should be
+       visible enough to feel continuous, blurred enough to stay readable
+       behind the logo. */
+    background-color: var(--color-surface-glass);
+    backdrop-filter: var(--blur-panel);
+    -webkit-backdrop-filter: var(--blur-panel);
+    border-block-end: var(--border-hairline) solid var(--color-border-subtle);
+  }
+
+  .shell__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-inline-size: 0;
+  }
+
+  .shell__divider {
+    inline-size: 1px;
+    block-size: 1.25rem;
+    background-color: var(--color-border);
+  }
+
+  .shell__tag {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+    white-space: nowrap;
+  }
+
+  /* The tag is the first thing to go: the logo and the account menu both have
+     to survive a 360px screen. */
+  @media (max-width: 560px) {
+    .shell__divider,
+    .shell__tag {
+      display: none;
+    }
+  }
+
+  /* --- main -------------------------------------------------------------- */
+  .shell__main {
+    flex: 1 1 auto;
+    /* The link in the height chain that actually permits scrolling below. */
+    min-block-size: 0;
+    display: flex;
+  }
+}

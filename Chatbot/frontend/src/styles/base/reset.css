@@ -1,0 +1,150 @@
+/* ==========================================================================
+   reset.css — normalise the browser, then get out of the way
+   --------------------------------------------------------------------------
+   Deliberately small. This flattens the differences between browsers and
+   fixes the defaults that are actively wrong for an app (inherited form
+   fonts, unbounded images, the 300ms tap delay) — it does not opinionate.
+   Everything visual belongs in base/elements.css.
+   ========================================================================== */
+
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  /* Margins are a layout decision, made by the layout. */
+  * {
+    margin: 0;
+  }
+
+  html {
+    /* Anchor jumps and scroll-into-view glide instead of teleporting.
+       Overridden below for users who ask for reduced motion. */
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    min-block-size: 100dvh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Media are block-level and never overflow their container. */
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-inline-size: 100%;
+  }
+
+  svg {
+    /* So icons colour themselves from the text they sit next to. */
+    fill: currentColor;
+  }
+
+  /* Form controls inherit type instead of falling back to the system font. */
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+  }
+
+  button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    /* Kills the 300ms delay and the grey flash on mobile Safari. */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  /* Long unbroken strings — a URL in an answer, a fund code — must wrap
+     rather than force the whole conversation column to scroll sideways. */
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  li,
+  dd,
+  dt,
+  figcaption {
+    overflow-wrap: break-word;
+  }
+
+  /* Headings are styled by role, not by level — see base/typography.css. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+
+  ul[role='list'],
+  ol[role='list'] {
+    list-style: none;
+    padding: 0;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  /* `hidden` should win over any display we set later. */
+  [hidden] {
+    display: none !important;
+  }
+
+  /* Roots participate in the layout rather than wrapping it. */
+  #root {
+    isolation: isolate; /* a clean stacking context for the whole app */
+    min-block-size: 100dvh;
+  }
+
+  /* ------------------------------------------------------------------
+     Reduced motion — handled once, here.
+     Motion is not removed outright: transitions are collapsed to a frame
+     so state changes still register, and looping ambience is stopped.
+     Components must NOT re-implement this check.
+     ------------------------------------------------------------------ */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

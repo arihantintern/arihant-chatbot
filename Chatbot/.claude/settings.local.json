@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sed -i '' \"s|from '/Users/vandannagori/Documents/ArihantInternshipProjects/Chatbot/frontend/src/lib/markdown/index.js'|from '/Users/vandannagori/Documents/ArihantInternshipProjects/Chatbot/frontend/src/lib/markdown/parse.js'|\" md-test.mjs)",
+      "Bash(sed -i '' \"s|import { parseBlocks, tokenizeInline } from|import { parseBlocks } from|\" md-test.mjs)",
+      "Bash(sed -i '1a import { tokenizeInline } from '\"'\"'/Users/vandannagori/Documents/ArihantInternshipProjects/Chatbot/frontend/src/lib/markdown/inline.js'\"'\"';' md-test.mjs)",
+      "Bash(node md-test.mjs)"
+    ]
+  }
+}

@@ -1,0 +1,79 @@
+/* ==========================================================================
+   SignOutDialog
+   --------------------------------------------------------------------------
+   The <dialog> element itself is the full-viewport centring layer (it is
+   already transparent and borderless from base/elements.css); the visible
+   card is the panel inside it. Keeping those separate is what lets a click on
+   the backdrop be told apart from a click on the card.
+   ========================================================================== */
+
+@layer components {
+  .signout-dialog {
+    /* The browser centres a modal dialog with `margin: auto` against
+       `inset: 0`; restated because base/elements.css resets the element's
+       box and a dialog with no margin pins itself to the top-left. */
+    margin: auto;
+    padding: var(--gutter);
+    max-inline-size: 100%;
+    z-index: var(--z-modal);
+  }
+
+  /* Guarded on `[open]`, and it has to be: the UA stylesheet hides a closed
+     dialog with `display: none`, and a `display` declared here without the
+     guard would beat it — leaving the modal on screen permanently. */
+  .signout-dialog[open] {
+    display: grid;
+    place-items: center;
+  }
+
+  .signout-dialog__panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+
+    inline-size: min(26rem, 100%);
+    padding: var(--space-6);
+
+    background-color: var(--color-surface-overlay);
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl), var(--shadow-glint);
+
+    animation: scale-in var(--duration-base) var(--ease-spring) both;
+  }
+
+  .signout-dialog__body {
+    font-size: var(--font-size-md);
+    line-height: var(--leading-normal);
+    color: var(--color-text-secondary);
+    text-wrap: pretty;
+  }
+
+  .signout-dialog__body strong {
+    /* The account being signed out of is the one fact worth checking before
+       confirming, so it does not fade into the sentence. */
+    color: var(--color-text-primary);
+    word-break: break-word;
+  }
+
+  .signout-dialog__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-2);
+    margin-block-start: var(--space-1);
+  }
+
+  /* On a phone the two buttons stack full-width. Deliberately not
+     `column-reverse`: it would put the confirm button first on screen while
+     it stayed second in the DOM, so keyboard order and reading order would
+     disagree with what the eye sees. */
+  @media (max-width: 480px) {
+    .signout-dialog__actions {
+      flex-direction: column;
+    }
+
+    .signout-dialog__actions .btn {
+      inline-size: 100%;
+    }
+  }
+}

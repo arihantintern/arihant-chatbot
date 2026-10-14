@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+    <title>Arihant Assistant</title>
+    <meta
+      name="description"
+      content="Arihant Capital's research assistant — ask about markets, funds and filings, and see exactly where every answer came from."
+    />
+    <meta name="color-scheme" content="light dark" />
+    <!-- Kept in step with --color-canvas by ThemeProvider once React mounts. -->
+    <meta name="theme-color" content="#f6f7fa" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!--
+      One request covers weights 100–900 (Jost is a variable font), and
+      preloading it means the swap from the fallback happens in the first
+      moments rather than under the reader's eyes.
+    -->
+    <link
+      rel="preload"
+      href="/fonts/Jost-Variable.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
+
+    <!--
+      Theme resolution, before the first paint.
+
+      This has to be a blocking inline script: a module runs after the
+      document has already been painted, so resolving the theme in React
+      would show one white frame before flipping to dark. Sixteen lines here
+      buy a flash-free load.
+
+      ⚠️  Mirrors src/context/theme/theme.constants.js — change both together.
+    -->
+    <script>
+      (function () {
+        var root = document.documentElement;
+        try {
+          var stored = localStorage.getItem('arihant.theme');
+          var preference =
+            stored === 'light' || stored === 'dark' || stored === 'system'
+              ? stored
+              : 'system';
+          root.dataset.theme =
+            preference === 'system'
+              ? window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light'
+              : preference;
+        } catch (error) {
+          /* Storage blocked (private mode, locked-down browser). Light is a
+             safe floor — every token is defined for it. */
+          root.dataset.theme = 'light';
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

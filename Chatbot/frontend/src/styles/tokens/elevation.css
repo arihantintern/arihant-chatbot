@@ -1,0 +1,92 @@
+/* ==========================================================================
+   elevation.css — shadows, glows, blurs
+   --------------------------------------------------------------------------
+   Every shadow is layered (a tight contact shadow + a wide ambient one),
+   which is what makes depth read as physical rather than as a grey smudge.
+   The tint is the brand navy, not black — pure black over a cool canvas goes
+   muddy.
+
+   Dark mode gets its own set: shadows alone barely register on a near-black
+   canvas, so depth there comes from a 1px top *glint* plus a deeper ambient
+   shadow. That override lives at the bottom of this file.
+   ========================================================================== */
+
+@layer tokens {
+  :root {
+    /* --- elevation ramp -------------------------------------------------
+       xs  resting chips and inputs
+       sm  cards at rest
+       md  cards on hover, the composer
+       lg  dropdowns, popovers
+       xl  modals, command palette
+       2xl the drag layer / spotlight moments                            */
+    --shadow-xs: 0 1px 2px rgb(var(--rgb-ink-900) / 0.05);
+    --shadow-sm:
+      0 1px 2px rgb(var(--rgb-ink-900) / 0.04),
+      0 2px 6px rgb(var(--rgb-ink-900) / 0.05);
+    --shadow-md:
+      0 2px 4px rgb(var(--rgb-ink-900) / 0.04),
+      0 6px 16px rgb(var(--rgb-ink-900) / 0.07);
+    --shadow-lg:
+      0 4px 8px rgb(var(--rgb-ink-900) / 0.05),
+      0 12px 32px rgb(var(--rgb-ink-900) / 0.1);
+    --shadow-xl:
+      0 8px 16px rgb(var(--rgb-ink-900) / 0.06),
+      0 24px 56px rgb(var(--rgb-ink-900) / 0.14);
+    --shadow-2xl:
+      0 16px 32px rgb(var(--rgb-ink-900) / 0.08),
+      0 40px 96px rgb(var(--rgb-ink-900) / 0.2);
+
+    /* Pressed / recessed surfaces — search fields, track grooves. */
+    --shadow-inset: inset 0 1px 2px rgb(var(--rgb-ink-900) / 0.07);
+    --shadow-inset-strong: inset 0 2px 5px rgb(var(--rgb-ink-900) / 0.1);
+
+    /* The hairline highlight along the top edge of a raised surface. */
+    --shadow-glint: inset 0 1px 0 var(--color-border-glint);
+
+    /* --- glows -----------------------------------------------------------
+       Reserved for state, never decoration: a focused composer, a streaming
+       answer, the primary CTA on hover. */
+    --glow-brand: 0 0 0 1px var(--color-brand-ring), 0 8px 28px var(--color-brand-glow);
+    --glow-brand-sm: 0 2px 12px var(--color-brand-glow);
+    --glow-accent: 0 0 0 1px var(--color-accent-ring), 0 8px 28px var(--color-accent-glow);
+    --glow-accent-sm: 0 2px 12px var(--color-accent-glow);
+
+    /* --- focus -----------------------------------------------------------
+       One ring, used everywhere. Offset is painted in the canvas color so
+       the ring reads cleanly even on top of a filled button. */
+    --focus-ring-width: 2px;
+    --focus-ring-offset: 2px;
+    --focus-ring:
+      0 0 0 var(--focus-ring-offset) var(--color-focus-ring-offset),
+      0 0 0 calc(var(--focus-ring-offset) + var(--focus-ring-width))
+        var(--color-focus-ring);
+
+    /* --- blurs (frosted surfaces) ---------------------------------------- */
+    --blur-sm: blur(6px);
+    --blur-panel: blur(16px) saturate(150%);
+    --blur-heavy: blur(28px) saturate(160%);
+  }
+
+  [data-theme='dark'] {
+    --shadow-xs: 0 1px 2px rgb(var(--rgb-ink-1000) / 0.4);
+    --shadow-sm:
+      0 1px 2px rgb(var(--rgb-ink-1000) / 0.5),
+      0 2px 8px rgb(var(--rgb-ink-1000) / 0.4);
+    --shadow-md:
+      0 2px 4px rgb(var(--rgb-ink-1000) / 0.5),
+      0 8px 20px rgb(var(--rgb-ink-1000) / 0.45);
+    --shadow-lg:
+      0 4px 10px rgb(var(--rgb-ink-1000) / 0.55),
+      0 16px 40px rgb(var(--rgb-ink-1000) / 0.5);
+    --shadow-xl:
+      0 8px 20px rgb(var(--rgb-ink-1000) / 0.6),
+      0 28px 68px rgb(var(--rgb-ink-1000) / 0.55);
+    --shadow-2xl:
+      0 16px 40px rgb(var(--rgb-ink-1000) / 0.65),
+      0 48px 120px rgb(var(--rgb-ink-1000) / 0.6);
+
+    --shadow-inset: inset 0 1px 2px rgb(var(--rgb-ink-1000) / 0.6);
+    --shadow-inset-strong: inset 0 2px 6px rgb(var(--rgb-ink-1000) / 0.7);
+  }
+}

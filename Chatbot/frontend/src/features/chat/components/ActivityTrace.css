@@ -1,0 +1,232 @@
+/* ==========================================================================
+   ActivityTrace
+   --------------------------------------------------------------------------
+   The `--color-trace-*` group in tokens/semantic.css was written for this
+   panel: a violet-tinted surface (the app's "intelligence" accent, distinct
+   from brand green) with three states for a stage — pending, active, done.
+
+   The stage list is a `<ol>` and looks like a timeline: one vertical rule
+   drawn by the markers themselves rather than a separate element, so nothing
+   has to be kept in sync with the number of stages.
+   ========================================================================== */
+
+@layer components {
+  .trace {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+
+    padding: var(--space-4);
+    border: var(--border-hairline) solid var(--color-trace-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-trace-surface);
+
+    animation: fade-in-up var(--duration-base) var(--ease-decelerate) both;
+  }
+
+  /* --- head --------------------------------------------------------------- */
+  .trace__head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .trace__title {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    flex: 1 1 auto;
+
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-trace-text);
+  }
+
+  .trace__elapsed {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-regular);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-tertiary);
+  }
+
+  /* The three dots. `typing-dot` is already in utilities/animations.css. */
+  .trace__dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    flex: none;
+  }
+
+  .trace__dots i {
+    inline-size: 5px;
+    block-size: 5px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-trace-active);
+    animation: typing-dot 1.2s var(--ease-in-out) infinite;
+  }
+
+  .trace__dots i:nth-child(2) {
+    animation-delay: 160ms;
+  }
+
+  .trace__dots i:nth-child(3) {
+    animation-delay: 320ms;
+  }
+
+  .trace__stop {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    flex: none;
+
+    padding: var(--space-1) var(--space-2-5);
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface);
+
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+
+    transition: var(--transition-colors);
+  }
+
+  .trace__stop:hover {
+    color: var(--color-danger);
+    border-color: var(--color-danger-border);
+    background-color: var(--color-danger-soft);
+  }
+
+  .trace__stop:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* --- the stage timeline -------------------------------------------------- */
+  .trace__stages {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .trace__stage {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding-block: var(--space-1-5);
+  }
+
+  /* The connecting rule: drawn from each marker down to the next one, so the
+     last stage has no dangling tail. */
+  .trace__stage:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    inset-block-start: calc(var(--space-1-5) + 20px);
+    inset-block-end: 0;
+    inset-inline-start: 9px;
+    inline-size: 1px;
+    background-color: var(--color-trace-border);
+  }
+
+  .trace__marker {
+    display: grid;
+    place-items: center;
+    flex: none;
+
+    inline-size: 19px;
+    block-size: 19px;
+    border-radius: var(--radius-full);
+    border: var(--border-hairline) solid currentcolor;
+
+    transition: var(--transition-colors), var(--transition-transform);
+  }
+
+  .trace__text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-inline-size: 0;
+  }
+
+  .trace__label {
+    font-size: var(--font-size-sm);
+    line-height: var(--leading-snug);
+    transition: var(--transition-colors);
+  }
+
+  .trace__detail {
+    font-size: var(--font-size-xs);
+    line-height: var(--leading-snug);
+    color: var(--color-text-tertiary);
+    text-wrap: pretty;
+    animation: fade-in var(--duration-base) var(--ease-standard) both;
+  }
+
+  /* --- the three states ---------------------------------------------------- */
+  .trace__stage[data-state='waiting'] {
+    color: var(--color-trace-pending);
+  }
+
+  .trace__stage[data-state='waiting'] .trace__label {
+    color: var(--color-trace-pending);
+  }
+
+  .trace__stage[data-state='done'] {
+    color: var(--color-trace-done);
+  }
+
+  .trace__stage[data-state='done'] .trace__label {
+    color: var(--color-text-secondary);
+  }
+
+  .trace__stage[data-state='done'] .trace__marker {
+    background-color: var(--color-brand-soft);
+    border-color: transparent;
+  }
+
+  .trace__stage[data-state='active'] {
+    color: var(--color-trace-active);
+  }
+
+  .trace__stage[data-state='active'] .trace__label {
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-medium);
+  }
+
+  /* The one moving part in the list, and it is on the running stage only —
+     a halo that breathes, so the eye knows where "now" is without reading. */
+  .trace__stage[data-state='active'] .trace__marker {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 4px var(--color-accent-soft);
+    animation: pulse-soft 2s var(--ease-in-out) infinite;
+  }
+
+  /* --- notes -------------------------------------------------------------- */
+  .trace__note {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+
+    padding: var(--space-2-5) var(--space-3);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-surface-glass);
+
+    font-size: var(--font-size-xs);
+    line-height: var(--leading-snug);
+    color: var(--color-text-secondary);
+    text-wrap: pretty;
+
+    animation: fade-in var(--duration-slow) var(--ease-standard) both;
+  }
+
+  .trace__note > .icon {
+    flex: none;
+    margin-block-start: 1px;
+    color: var(--color-info);
+  }
+}

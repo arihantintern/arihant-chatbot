@@ -1,0 +1,141 @@
+/* ==========================================================================
+   AuthScreen — the layout of the unauthenticated app
+   --------------------------------------------------------------------------
+   One breakpoint, at 1024px:
+
+     below   the form, full width, centred, nothing else
+     above   two columns — showcase on the left, form on the right
+
+   The DOM order is form-then-showcase and the grid puts them back the other
+   way round, so the reading order and the visual order can differ on purpose.
+   `grid-column` is what does it; `order` would break the tab sequence.
+   ========================================================================== */
+
+@layer layout {
+  .auth {
+    display: grid;
+    grid-template-columns: 1fr;
+    min-block-size: 100dvh;
+  }
+
+  /* --- the form column --------------------------------------------------- */
+  .auth__panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-8) var(--gutter);
+  }
+
+  .auth__panel-inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+
+    inline-size: 100%;
+    /* A form column wider than this makes a 40-character email look lost in
+       it, and pushes the label away from its input. */
+    max-inline-size: var(--width-form);
+  }
+
+  .auth__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-block-end: var(--space-2);
+  }
+
+  .auth__intro {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    animation: fade-in-up var(--duration-base) var(--ease-standard) both;
+  }
+
+  .auth__lead {
+    max-inline-size: 42ch;
+  }
+
+  .auth__foot {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-block-start: var(--space-2);
+    padding-block-start: var(--space-5);
+    border-block-start: var(--border-hairline) solid var(--color-border-subtle);
+  }
+
+  .auth__legal {
+    font-size: var(--font-size-2xs);
+    line-height: var(--leading-normal);
+    color: var(--color-text-muted);
+    text-wrap: pretty;
+  }
+
+  /* --- two columns -------------------------------------------------------- */
+  @media (min-width: 1024px) {
+    .auth {
+      /* The showcase gets the larger share; the form stays at its readable
+         width and is centred in what is left. */
+      grid-template-columns: 1.15fr 1fr;
+    }
+
+    .auth__panel {
+      grid-column: 2;
+      grid-row: 1;
+      padding: var(--space-10);
+    }
+
+    .auth-showcase {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .auth__head {
+      /* The logo is hidden at this width (see below), so the theme toggle
+         sits at the end on its own. */
+      justify-content: flex-end;
+    }
+  }
+
+  /* --- one column --------------------------------------------------------- */
+  @media (max-width: 1023px) {
+    .auth__panel {
+      /* Room at the top so the form is not welded to the address bar. */
+      padding-block: var(--space-10) var(--space-8);
+    }
+  }
+}
+
+/* ==========================================================================
+   The two responsive rules that have to live in the `components` layer
+   --------------------------------------------------------------------------
+   Both of these override a `display` that a component's own stylesheet sets
+   on itself — `.logo` in Logo.css and `.auth-showcase` in AuthShowcase.css.
+
+   Layer order, not specificity, decides that: `components` is declared after
+   `layout` in styles/index.css, so *any* rule in a component sheet beats
+   *every* rule in a layout one, no matter how specific. Written up in
+   `@layer layout` above, `display: none` would simply never apply.
+
+   So they sit here instead, in the same layer as the declarations they are
+   overriding, where source order settles it — and no `!important` is needed.
+   ========================================================================== */
+
+@layer components {
+  @media (min-width: 1024px) {
+    /* The showcase states the brand on this side of the breakpoint; a second
+       lockup above the form would be the third Arihant logo on one screen. */
+    .auth__logo {
+      display: none;
+    }
+  }
+
+  @media (max-width: 1023px) {
+    /* Not `visibility: hidden`: the showcase's aurora and its blurred layers
+       should not be composited at all on a phone. */
+    .auth-showcase {
+      display: none;
+    }
+  }
+}

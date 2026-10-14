@@ -1,0 +1,55 @@
+/* ==========================================================================
+   index.css — the single stylesheet entry point
+   --------------------------------------------------------------------------
+   Imported exactly once, from src/main.jsx. Nothing else in the app imports
+   a file from styles/ directly.
+
+   THE CASCADE ORDER IS DECLARED HERE, ONCE, and it is the reason this
+   codebase never needs `!important`:
+
+     reset       browser normalisation
+     tokens      design variables (:root)
+     base        how bare HTML looks
+     layout      the app shell — rails, panels, grids
+     components  buttons, cards, bubbles, inputs
+     utilities   the small `u-` escape hatches
+
+   Later layers beat earlier ones regardless of selector specificity. So a
+   single-class `.u-truncate` will always override a component's
+   `.message__title span` without a specificity fight, and a component will
+   always beat a base element style. Anything written *outside* a layer beats
+   everything in one — which is why every file below wraps itself in
+   `@layer`, and why new component CSS must do the same.
+
+   `@layer` statements are allowed before `@import`; nothing else is, so the
+   import block must stay at the top of the file.
+   ========================================================================== */
+
+@layer reset, tokens, base, layout, components, utilities;
+
+/* --- reset ------------------------------------------------------------- */
+@import './base/reset.css';
+@import './base/fonts.css';
+
+/* --- tokens: the design system's vocabulary ----------------------------- */
+@import './tokens/palette.css'; /* raw colors        — never used directly */
+@import './tokens/semantic.css'; /* meaning of colors — light + dark themes */
+@import './tokens/typography.css';
+@import './tokens/space.css';
+@import './tokens/elevation.css';
+@import './tokens/motion.css';
+@import './tokens/layers.css';
+@import './tokens/gradients.css';
+
+/* --- base: how the document looks before components ---------------------- */
+@import './base/elements.css';
+@import './base/typography.css';
+
+/* --- utilities ----------------------------------------------------------- */
+@import './utilities/animations.css';
+@import './utilities/utilities.css';
+
+/* Component and layout stylesheets are NOT imported here — each React
+   component imports its own `.css` file next to it, and Vite bundles them.
+   That keeps a component and its styles inseparable, and means deleting a
+   component deletes its CSS with it. */

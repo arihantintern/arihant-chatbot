@@ -1,0 +1,207 @@
+/* ==========================================================================
+   Button
+   --------------------------------------------------------------------------
+   Four variants, three sizes, and one shared set of interaction states. The
+   press state is the one that matters most: a control that visibly gives way
+   under the cursor is the difference between a page and an application.
+   ========================================================================== */
+
+@layer components {
+  .btn {
+    position: relative;
+    isolation: isolate; /* keeps the sheen behind the label */
+    overflow: hidden; /* and clipped to the rounded corners */
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--btn-gap, var(--space-2));
+
+    block-size: var(--btn-height);
+    padding-inline: var(--btn-padding);
+    border: var(--border-hairline) solid transparent;
+    border-radius: var(--radius-md);
+
+    font-size: var(--btn-font-size);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-none);
+    letter-spacing: var(--tracking-wide);
+    white-space: nowrap;
+    text-decoration: none;
+
+    transition:
+      var(--transition-colors),
+      var(--transition-transform),
+      var(--transition-shadow);
+  }
+
+  .btn__label {
+    /* Above the sheen, and never squashed by a long label in a narrow
+       button — the button grows or the text truncates, it does not compress. */
+    position: relative;
+    z-index: 1;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .btn__sheen {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    opacity: 0;
+    background: var(--gradient-surface-lift);
+    transition: var(--transition-opacity);
+  }
+
+  .btn:hover .btn__sheen {
+    opacity: 1;
+  }
+
+  /* The trailing arrow leans forward on hover. A 2px nudge is enough to read
+     as intent; more and it looks like a loose element. */
+  .btn__icon-end {
+    transition: var(--transition-transform);
+  }
+
+  .btn:hover .btn__icon-end {
+    transform: translateX(2px);
+  }
+
+  /* --- sizes ------------------------------------------------------------- */
+  .btn--sm {
+    --btn-height: var(--control-height-sm);
+    --btn-padding: var(--space-3);
+    --btn-font-size: var(--font-size-md);
+    --btn-gap: var(--space-1-5);
+  }
+
+  .btn--md {
+    --btn-height: var(--control-height-md);
+    --btn-padding: var(--space-4);
+    --btn-font-size: var(--font-size-base);
+  }
+
+  .btn--lg {
+    --btn-height: var(--control-height-lg);
+    --btn-padding: var(--space-6);
+    --btn-font-size: var(--font-size-base);
+    border-radius: var(--radius-lg);
+  }
+
+  .btn--full {
+    inline-size: 100%;
+  }
+
+  /* --- primary -----------------------------------------------------------
+     The brand gradient, and the only button on a screen that gets a glow.
+     If two of these are visible at once, one of them is the wrong variant. */
+  .btn--primary {
+    background-image: var(--gradient-brand);
+    background-color: var(--color-brand);
+    color: var(--color-brand-on);
+    box-shadow: var(--shadow-sm), var(--glow-brand-sm);
+  }
+
+  .btn--primary:hover {
+    background-image: var(--gradient-brand-hover);
+    box-shadow: var(--shadow-md), var(--glow-brand);
+    transform: translateY(-1px);
+  }
+
+  .btn--primary:active {
+    background-image: none;
+    background-color: var(--color-brand-active);
+    box-shadow: var(--shadow-xs);
+    transform: translateY(0) scale(0.985);
+    transition-duration: var(--duration-instant);
+  }
+
+  /* --- secondary --------------------------------------------------------- */
+  .btn--secondary {
+    background-color: var(--color-surface);
+    border-color: var(--color-border);
+    color: var(--color-text-primary);
+    box-shadow: var(--shadow-xs);
+  }
+
+  .btn--secondary:hover {
+    background-color: var(--color-surface-hover);
+    border-color: var(--color-border-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .btn--secondary:active {
+    background-color: var(--color-surface-active);
+    transform: translateY(0) scale(0.985);
+    transition-duration: var(--duration-instant);
+  }
+
+  /* --- ghost ------------------------------------------------------------- */
+  .btn--ghost {
+    color: var(--color-text-secondary);
+  }
+
+  .btn--ghost:hover {
+    background-color: var(--color-surface-hover);
+    color: var(--color-text-primary);
+  }
+
+  .btn--ghost:active {
+    background-color: var(--color-surface-active);
+    transform: scale(0.985);
+    transition-duration: var(--duration-instant);
+  }
+
+  /* --- danger ------------------------------------------------------------
+     Tinted rather than filled. A solid red button is right for "delete
+     everything"; signing out is not that, and a wall of red trains people to
+     ignore it when it matters. */
+  .btn--danger {
+    background-color: var(--color-danger-soft);
+    border-color: var(--color-danger-border);
+    color: var(--color-danger);
+  }
+
+  .btn--danger:hover {
+    background-color: var(--color-danger);
+    border-color: var(--color-danger);
+    color: var(--color-danger-on);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .btn--danger:active {
+    background-color: var(--color-danger-hover);
+    transform: translateY(0) scale(0.985);
+    transition-duration: var(--duration-instant);
+  }
+
+  /* --- disabled & loading ------------------------------------------------
+     Both are `disabled` in the DOM, and they must not look the same: a
+     disabled button is inert and dim, a loading one is *working* and keeps
+     its colour so the person can see the action they started. */
+  .btn:disabled {
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn:disabled:not([data-loading]) {
+    background-image: none;
+    background-color: var(--color-surface-disabled);
+    border-color: transparent;
+    color: var(--color-text-disabled);
+  }
+
+  .btn[data-loading] {
+    cursor: progress;
+    /* The gradient stops travelling, so it reads as held rather than hovered. */
+    transform: none;
+  }
+
+  .btn[data-loading] .btn__sheen {
+    opacity: 0;
+  }
+}

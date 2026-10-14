@@ -1,0 +1,87 @@
+/* ==========================================================================
+   space.css — spacing, radii, sizes, borders, layout widths
+   --------------------------------------------------------------------------
+   A 4px base grid. Every margin, padding, gap and offset in the app comes
+   from this ramp — if a value isn't here, the layout is off-grid and should
+   be corrected rather than hard-coded.
+   ========================================================================== */
+
+@layer tokens {
+  :root {
+    /* --- spacing ramp (4px grid) --------------------------------------- */
+    --space-0: 0;
+    --space-px: 1px;
+    --space-0-5: 0.125rem; /*  2px */
+    --space-1: 0.25rem; /*  4px */
+    --space-1-5: 0.375rem; /*  6px */
+    --space-2: 0.5rem; /*  8px */
+    --space-2-5: 0.625rem; /* 10px */
+    --space-3: 0.75rem; /* 12px */
+    --space-3-5: 0.875rem; /* 14px */
+    --space-4: 1rem; /* 16px */
+    --space-5: 1.25rem; /* 20px */
+    --space-6: 1.5rem; /* 24px */
+    --space-7: 1.75rem; /* 28px */
+    --space-8: 2rem; /* 32px */
+    --space-9: 2.25rem; /* 36px */
+    --space-10: 2.5rem; /* 40px */
+    --space-12: 3rem; /* 48px */
+    --space-14: 3.5rem; /* 56px */
+    --space-16: 4rem; /* 64px */
+    --space-20: 5rem; /* 80px */
+    --space-24: 6rem; /* 96px */
+    --space-32: 8rem; /* 128px */
+
+    /* --- radii ----------------------------------------------------------
+       The product's corner language is soft-but-not-bubbly. Controls sit at
+       `md`, cards at `lg`/`xl`, sheets and the composer at `2xl`. */
+    --radius-xs: 4px;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 20px;
+    --radius-2xl: 28px;
+    --radius-3xl: 36px;
+    --radius-full: 999px;
+
+    /* --- border widths --------------------------------------------------- */
+    --border-hairline: 1px;
+    --border-thin: 1.5px;
+    --border-thick: 2px;
+
+    /* --- control sizes --------------------------------------------------
+       Heights for buttons, inputs and icon buttons. `md` is the default;
+       everything is ≥36px so touch targets stay honest on tablets. */
+    --control-height-xs: 28px;
+    --control-height-sm: 32px;
+    --control-height-md: 40px;
+    --control-height-lg: 48px;
+    --control-height-xl: 56px;
+
+    --icon-size-xs: 14px;
+    --icon-size-sm: 16px;
+    --icon-size-md: 18px;
+    --icon-size-lg: 20px;
+    --icon-size-xl: 24px;
+    --icon-size-2xl: 32px;
+
+    --avatar-size-sm: 28px;
+    --avatar-size-md: 36px;
+    --avatar-size-lg: 48px;
+
+    /* --- layout ---------------------------------------------------------
+       Named widths for the app shell. The chat column is capped so answers
+       keep a readable measure no matter how wide the display is. */
+    --width-content: 1180px;
+    --width-conversation: 780px;
+    --width-form: 420px;
+    --width-rail: 76px; /* the collapsed icon rail            */
+    --width-panel: 320px; /* the expanded contextual panel      */
+    --height-topbar: 64px;
+    --height-composer-min: 56px;
+    --height-composer-max: 240px;
+
+    /* Gutters shrink on small screens so content keeps its width. */
+    --gutter: clamp(var(--space-4), 3vw, var(--space-8));
+  }
+}

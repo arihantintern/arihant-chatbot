@@ -1,0 +1,83 @@
+/* ==========================================================================
+   ChatScreen — the layout
+   --------------------------------------------------------------------------
+   THE HEIGHT CHAIN, which is the only structurally tricky thing here.
+
+   AppShell gives this element a fixed height (the viewport minus the top bar).
+   From there down, every ancestor of the scroll region is `display: flex` with
+   `min-block-size: 0`, because a flex child's default `min-height: auto`
+   refuses to shrink below its content — and one link in that chain missing it
+   is what makes a scroll region grow the page instead of scrolling itself.
+
+   So: .chat (row) → .chat__main (column, min-0) → .convo (flex 1, min-0,
+   overflow-y). The composer is a sibling of the scroll region rather than
+   inside it, so it stays put with no `position: fixed` and no viewport-unit
+   arithmetic against a mobile keyboard.
+   ========================================================================== */
+
+@layer layout {
+  .chat {
+    display: flex;
+    /* A flex child of AppShell's `<main>`, which is itself the flexible row of
+       the shell — so the size comes from there rather than from the viewport,
+       and the top bar is already accounted for. */
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    min-block-size: 0;
+    overflow: hidden;
+  }
+
+  .chat__main {
+    position: relative; /* the history panel is absolute within this */
+    display: flex;
+    flex-direction: column;
+
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    min-block-size: 0;
+  }
+
+  .chat__notice {
+    flex: none;
+    padding: var(--space-3) var(--gutter) 0;
+    inline-size: 100%;
+    max-inline-size: var(--width-conversation);
+    margin-inline: auto;
+  }
+
+  /* --- the composer plate --------------------------------------------------
+     Frosted, so the last answer is visible scrolling underneath it rather
+     than being cut off by an opaque band. The mask above it fades the
+     conversation out as it reaches the plate. */
+  .chat__composer {
+    position: relative;
+    flex: none;
+    z-index: var(--z-composer);
+
+    padding: var(--space-3) var(--gutter) var(--space-4);
+    background-color: var(--color-surface-glass);
+    backdrop-filter: var(--blur-panel);
+    -webkit-backdrop-filter: var(--blur-panel);
+    border-block-start: var(--border-hairline) solid var(--color-border-subtle);
+  }
+
+  /* --- narrow --------------------------------------------------------------
+     The rail moves to the bottom (see ChatRail.css) — which means the DOM
+     order (rail first, for the keyboard and for screen readers) and the visual
+     order (conversation first) have to differ, and `order` is what does that
+     without touching the tab sequence. */
+  @media (max-width: 900px) {
+    .chat {
+      flex-direction: column;
+    }
+
+    .chat__main {
+      order: 1;
+    }
+
+    .chat__composer {
+      padding-block-end: var(--space-3);
+      /* On a phone the rail below already carries the safe-area padding. */
+    }
+  }
+}

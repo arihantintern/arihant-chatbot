@@ -1,0 +1,51 @@
+/* ==========================================================================
+   Spinner
+   --------------------------------------------------------------------------
+   A ring with one lit quadrant, built from borders rather than an SVG: it
+   inherits `currentColor`, so the same element reads correctly on a green
+   button, on a card, and in dark mode with no variants.
+   ========================================================================== */
+
+@layer components {
+  .spinner {
+    display: inline-block;
+    flex: none;
+    inline-size: var(--spinner-size, 18px);
+    block-size: var(--spinner-size, 18px);
+
+    border: var(--spinner-track, 2px) solid currentColor;
+    border-radius: var(--radius-full);
+    /* The gap in the ring is what makes the rotation visible at all. */
+    border-block-start-color: transparent;
+    opacity: 0.9;
+
+    animation: spin 700ms linear infinite;
+  }
+
+  .spinner--sm {
+    --spinner-size: 14px;
+    --spinner-track: 1.5px;
+  }
+
+  .spinner--md {
+    --spinner-size: 18px;
+  }
+
+  .spinner--lg {
+    --spinner-size: 26px;
+    --spinner-track: 2.5px;
+  }
+
+  /* base/reset.css collapses every animation to a single frame under reduced
+     motion — which would leave a ring frozen with a gap in it, reading as a
+     rendering fault rather than as progress. So the gap is closed and the
+     ring becomes a quiet static badge; the *label* beside it ("Signing in…")
+     is what actually carries the meaning here, which is why this needs no
+     `!important` fight with the reset. */
+  @media (prefers-reduced-motion: reduce) {
+    .spinner {
+      border-block-start-color: currentColor;
+      opacity: 0.4;
+    }
+  }
+}

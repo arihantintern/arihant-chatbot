@@ -1,0 +1,77 @@
+# LangChain Core
+langchain
+langchain-core
+
+# Legacy APIs moved out of langchain in 1.x (StructuredOutputParser, ResponseSchema, ...)
+langchain-classic
+langchain-community
+# OpenAI Integration
+# langchain-openai
+# openai
+
+langchain_openai
+langchain_ollama
+# Anthropic Integration
+# langchain-anthropic
+
+# Google Gemini Integration
+# langchain-google-genai
+# google-generativeai
+
+# Hugging Face Integration
+langchain_text-splitters
+langchain-huggingface
+transformers
+huggingface-hub
+
+# Environment Variable Management
+python-dotenv
+
+# For visualising the chain
+grandalf
+
+# Machine Learning Utilities
+numpy
+scikit-learn
+tiktoken
+ddgs
+
+streamlit
+
+# RAG (loaders, splitters, vector stores)
+# also needs an embedding model -> ollama pull nomic-embed-text
+pypdf
+faiss-cpu
+# SemanticChunker (splits on meaning instead of character count)
+langchain-experimental
+PyMySQL
+
+# chat history in mongodb. [srv] pulls dnspython, which mongodb+srv:// atlas uris
+# need to resolve at all -- without it every connection fails on the scheme.
+pymongo[srv]
+
+# accounts and tokens -- auth.py, api.py.
+#
+# bcrypt directly and not passlib: passlib's bcrypt backend reads bcrypt.__about__,
+# which bcrypt 4.x removed, so the pairing raises AttributeError on the first hash.
+# One less layer, and the two calls we want (hashpw, checkpw) are the whole api.
+bcrypt
+# PyJWT, imported as `jwt`. Not python-jose, which is the fastapi-tutorial default
+# and barely maintained.
+PyJWT
+fastapi
+uvicorn[standard]
+# EmailStr in the request models is a pydantic extra, not part of pydantic itself
+pydantic[email]
+
+# cmots.py / cmots_mf.py / cmots_ipo.py / cmots_store.py / cmots_scheduler.py --
+# the market-data feed (equities, mutual funds, IPOs)
+requests
+apscheduler
+
+## pdfLoaders
+
+# plain unstructured installs an empty shell, the pdf parsers are an extra.
+# without [pdf] -> ModuleNotFoundError: No module named 'pdfminer', then pi_heif, then...
+unstructured[pdf]
+pymupdf

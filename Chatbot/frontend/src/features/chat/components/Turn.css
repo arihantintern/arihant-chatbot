@@ -1,0 +1,315 @@
+/* ==========================================================================
+   Turn — one question and its answer
+   --------------------------------------------------------------------------
+   The asymmetry is deliberate. The question is a bubble, inset from the end
+   of the column, because it is a thing somebody said. The answer is not a
+   bubble at all: it is a document, set flush to the column with its own
+   provenance strip above it. Two long answers in speech bubbles read like a
+   chat log; the same two set as documents read like research, which is what
+   this is.
+   ========================================================================== */
+
+@layer components {
+  .turn {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    scroll-margin-block: var(--space-8);
+  }
+
+  /* --- the question -------------------------------------------------------- */
+  .turn__ask {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-2);
+    /* Pushed toward the end of the column, but never the full width — a
+       question that fills the line is indistinguishable from an answer. */
+    align-self: flex-end;
+    max-inline-size: min(85%, 44rem);
+  }
+
+  .turn__bubble {
+    padding: var(--space-3) var(--space-4);
+    border: var(--border-hairline) solid var(--color-bubble-user-border);
+    border-radius: var(--radius-xl);
+    /* One squared corner, on the side it came from. */
+    border-end-end-radius: var(--radius-xs);
+
+    background-color: var(--color-bubble-user);
+    color: var(--color-bubble-user-text);
+
+    font-size: var(--font-size-base);
+    line-height: var(--leading-normal);
+    /* A pasted question keeps its line breaks; everything else wraps. */
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    text-wrap: pretty;
+  }
+
+  .turn__time {
+    flex: none;
+    padding-block-end: var(--space-1);
+    font-size: var(--font-size-2xs);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-muted);
+    opacity: 0;
+    transition: var(--transition-opacity);
+  }
+
+  /* The timestamp is available, not ambient: it appears when the turn is
+     looked at, which keeps a long conversation free of a column of clocks. */
+  .turn:hover .turn__time,
+  .turn:focus-within .turn__time {
+    opacity: 1;
+  }
+
+  /* --- what the question was read as --------------------------------------
+     Aligned with the question rather than the answer, because it is a
+     restatement of what was asked. Quiet: it is only ever shown when it
+     differs, so its presence is already the signal. */
+  .turn__reading {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-1-5);
+
+    align-self: flex-end;
+    max-inline-size: min(85%, 44rem);
+    padding-inline: var(--space-2);
+
+    font-size: var(--font-size-xs);
+    line-height: var(--leading-snug);
+    color: var(--color-text-tertiary);
+    text-align: end;
+    text-wrap: pretty;
+
+    animation: fade-in var(--duration-base) var(--ease-standard) both;
+  }
+
+  .turn__reading > .icon {
+    flex: none;
+    margin-block-start: 2px;
+    color: var(--color-accent);
+  }
+
+  .turn__reading em {
+    font-style: normal;
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+  }
+
+  /* --- the answer ---------------------------------------------------------- */
+  .turn__reply {
+    display: flex;
+    flex-direction: column;
+
+    padding: var(--space-5);
+    border: var(--border-hairline) solid var(--color-bubble-bot-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-bubble-bot);
+    color: var(--color-bubble-bot-text);
+    box-shadow: var(--shadow-xs), var(--shadow-glint);
+  }
+
+  /* --- the provenance strip ------------------------------------------------
+     Above the answer, deliberately: see the component's comment. The tone
+     comes from features/chat/sources.js, and `warning` is the one that
+     matters — an answer with nothing behind it must not look like one with
+     three documents behind it. */
+  .turn__source {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+
+    margin-block-end: var(--space-4);
+    padding-block-end: var(--space-3);
+    border-block-end: var(--border-hairline) solid var(--color-border-subtle);
+
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-text-secondary);
+  }
+
+  .turn__source-text {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    text-wrap: pretty;
+  }
+
+  .turn__source-icon {
+    flex: none;
+  }
+
+  .turn__took {
+    flex: none;
+    font-size: var(--font-size-2xs);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-muted);
+  }
+
+  .turn__source[data-tone='brand'] .turn__source-icon {
+    color: var(--color-brand);
+  }
+
+  .turn__source[data-tone='info'] .turn__source-icon {
+    color: var(--color-info);
+  }
+
+  .turn__source[data-tone='accent'] .turn__source-icon {
+    color: var(--color-accent);
+  }
+
+  .turn__source[data-tone='neutral'] .turn__source-icon {
+    color: var(--color-text-tertiary);
+  }
+
+  /* The ungrounded answer. A tinted strip and its own border, so it reads as
+     a caveat attached to this answer rather than as decoration. */
+  .turn__source[data-tone='warning'] {
+    margin-inline: calc(var(--space-5) * -1);
+    margin-block-start: calc(var(--space-5) * -1);
+    padding: var(--space-2-5) var(--space-5);
+    border-block-end-color: var(--color-warning-border);
+    background-color: var(--color-warning-soft);
+    border-start-start-radius: var(--radius-lg);
+    border-start-end-radius: var(--radius-lg);
+    color: var(--color-text-primary);
+  }
+
+  .turn__source[data-tone='warning'] .turn__source-icon {
+    color: var(--color-warning);
+  }
+
+  /* --- the tools ----------------------------------------------------------- */
+  .turn__tools {
+    display: flex;
+    gap: var(--space-2);
+    margin-block-start: var(--space-4);
+  }
+
+  .turn__tool {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-1-5);
+    /* Sized for "Copied" so pressing it does not resize the row. */
+    min-inline-size: 5.5rem;
+
+    padding: var(--space-1-5) var(--space-2-5);
+    border: var(--border-hairline) solid transparent;
+    border-radius: var(--radius-full);
+    background: none;
+
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-tertiary);
+    cursor: pointer;
+
+    /* Revealed on hover over the turn, so a long conversation is not a wall
+       of buttons — but always present for the keyboard. */
+    opacity: 0;
+    transition: var(--transition-colors), var(--transition-opacity);
+  }
+
+  .turn:hover .turn__tool,
+  .turn:focus-within .turn__tool {
+    opacity: 1;
+  }
+
+  .turn__tool:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-surface-hover);
+    border-color: var(--color-border-subtle);
+  }
+
+  .turn__tool:focus-visible {
+    opacity: 1;
+    outline: var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  .turn__tool[data-done] {
+    color: var(--color-success);
+    opacity: 1;
+  }
+
+  /* --- failure ------------------------------------------------------------- */
+  .turn__failure {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+
+    padding: var(--space-3) var(--space-4);
+    border: var(--border-hairline) solid var(--color-danger-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-danger-soft);
+  }
+
+  .turn__failure-icon {
+    flex: none;
+    color: var(--color-danger);
+  }
+
+  .turn__failure-text {
+    flex: 1 1 16rem;
+    min-inline-size: 0;
+    font-size: var(--font-size-sm);
+    line-height: var(--leading-snug);
+    color: var(--color-text-primary);
+    text-wrap: pretty;
+  }
+
+  .turn__retry {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    flex: none;
+
+    padding: var(--space-1-5) var(--space-3);
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface);
+
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    cursor: pointer;
+
+    transition: var(--transition-colors), var(--transition-transform);
+  }
+
+  .turn__retry:hover {
+    background-color: var(--color-surface-hover);
+    border-color: var(--color-border-hover);
+    transform: translateY(-1px);
+  }
+
+  .turn__retry:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* --- narrow -------------------------------------------------------------- */
+  @media (max-width: 560px) {
+    .turn__ask {
+      max-inline-size: 100%;
+    }
+
+    .turn__reply {
+      padding: var(--space-4);
+    }
+
+    .turn__source[data-tone='warning'] {
+      margin-inline: calc(var(--space-4) * -1);
+      margin-block-start: calc(var(--space-4) * -1);
+      padding-inline: var(--space-4);
+    }
+
+    /* No hover on a phone, so the tools have to be permanent there. */
+    .turn__tool,
+    .turn__time {
+      opacity: 1;
+    }
+  }
+}

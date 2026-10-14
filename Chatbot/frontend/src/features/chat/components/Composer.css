@@ -1,0 +1,199 @@
+/* ==========================================================================
+   Composer
+   --------------------------------------------------------------------------
+   One rounded field with the send button inside it, over a frosted plate that
+   the conversation scrolls under. The field — not the page — is what carries
+   the focus ring, because the textarea inside it has no border of its own.
+   ========================================================================== */
+
+@layer components {
+  .composer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+
+    inline-size: 100%;
+    max-inline-size: var(--width-conversation);
+    margin-inline: auto;
+  }
+
+  /* --- the field ----------------------------------------------------------- */
+  .composer__field {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-2);
+
+    padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+    border: var(--border-thin) solid var(--color-border);
+    border-radius: var(--radius-2xl);
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-md), var(--shadow-glint);
+
+    transition:
+      var(--transition-colors),
+      var(--transition-shadow);
+  }
+
+  .composer__field:hover {
+    border-color: var(--color-border-hover);
+  }
+
+  /* The ring goes on the field, so it traces the shape the person sees rather
+     than the invisible rectangle of the textarea. */
+  .composer__field:focus-within {
+    border-color: var(--color-brand);
+    box-shadow: var(--shadow-md), 0 0 0 var(--focus-ring-width) var(--color-brand-ring);
+  }
+
+  .composer__field[data-disabled] {
+    background-color: var(--color-surface-sunken);
+    border-color: var(--color-border-subtle);
+    box-shadow: none;
+  }
+
+  .composer__input {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+
+    /* The height is written by the component from scrollHeight; these two are
+       the bounds it is clamped to. */
+    min-block-size: calc(var(--height-composer-min) - var(--space-4));
+    max-block-size: var(--height-composer-max);
+
+    padding-block: var(--space-2-5);
+    border: none;
+    background: none;
+    resize: none;
+
+    font-family: inherit;
+    font-size: var(--font-size-base);
+    line-height: var(--leading-normal);
+    color: var(--color-text-primary);
+
+    /* Scrolls only once it has hit the maximum height. */
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  .composer__input::placeholder {
+    color: var(--color-text-placeholder);
+  }
+
+  .composer__input:focus {
+    /* The field has the ring; a second one inside it is noise. */
+    outline: none;
+  }
+
+  .composer__input:disabled {
+    color: var(--color-text-tertiary);
+    cursor: not-allowed;
+  }
+
+  /* --- actions ------------------------------------------------------------- */
+  .composer__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex: none;
+    padding-block-end: 2px;
+  }
+
+  .composer__count {
+    font-size: var(--font-size-2xs);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    animation: fade-in var(--duration-fast) var(--ease-standard) both;
+  }
+
+  .composer__count[data-over] {
+    color: var(--color-danger);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .composer__send {
+    display: grid;
+    place-items: center;
+    flex: none;
+
+    inline-size: var(--control-height-md);
+    block-size: var(--control-height-md);
+    border: none;
+    border-radius: var(--radius-full);
+
+    background-image: var(--gradient-brand);
+    color: var(--color-brand-on);
+    cursor: pointer;
+
+    transition:
+      var(--transition-transform),
+      var(--transition-shadow),
+      var(--transition-opacity);
+  }
+
+  .composer__send:hover:not(:disabled) {
+    transform: scale(1.06);
+    box-shadow: var(--glow-brand-sm);
+  }
+
+  .composer__send:active:not(:disabled) {
+    transform: scale(0.96);
+  }
+
+  .composer__send:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* Dimmed rather than hidden: the button is where the person expects it, and
+     its state tells them the box is empty. */
+  .composer__send:disabled {
+    background-image: none;
+    background-color: var(--color-surface-disabled);
+    color: var(--color-text-disabled);
+    cursor: not-allowed;
+  }
+
+  /* --- the hint ------------------------------------------------------------ */
+  .composer__hint {
+    /* A fixed line so the field does not shift by a line-height when the hint
+       swaps between the keyboard keys and the waiting message. */
+    min-block-size: 1.1rem;
+    padding-inline: var(--space-2);
+    font-size: var(--font-size-2xs);
+    color: var(--color-text-muted);
+  }
+
+  .composer__keys,
+  .composer__waiting {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    flex-wrap: wrap;
+  }
+
+  .composer__key {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+
+    padding: 1px var(--space-1-5);
+    border: var(--border-hairline) solid var(--color-border-subtle);
+    border-radius: var(--radius-xs);
+    background-color: var(--color-surface-sunken);
+
+    font-family: var(--font-sans);
+    font-size: var(--font-size-3xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-tertiary);
+  }
+
+  /* The keyboard hint is meaningless without a keyboard, and a row of little
+     keycaps on a phone is pure clutter. The waiting message stays — that one
+     is about what the app is doing, not about how to type. */
+  @media (pointer: coarse) {
+    .composer__keys {
+      display: none;
+    }
+  }
+}

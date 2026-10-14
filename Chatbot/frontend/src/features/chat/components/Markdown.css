@@ -1,0 +1,261 @@
+/* ==========================================================================
+   Markdown — the editorial layer inside an answer
+   --------------------------------------------------------------------------
+   Every color here comes from the `editorial content` group in
+   tokens/semantic.css, which was written for exactly this: code surfaces,
+   table borders, the quote bar, the highlight tint. Nothing in this file
+   invents a color.
+
+   The spacing rule: blocks own their *bottom* margin only, and the last child
+   of the answer has none. Mixing top and bottom margins is what produces the
+   double gap between a paragraph and the list under it.
+   ========================================================================== */
+
+@layer components {
+  .md {
+    font-size: var(--font-size-base);
+    line-height: var(--leading-relaxed);
+    color: inherit;
+    /* Answers contain long unbroken things — a filename, a url, a scrip code —
+       and none of them may widen the bubble. */
+    overflow-wrap: break-word;
+  }
+
+  .md > :last-child {
+    margin-block-end: 0;
+  }
+
+  /* --- prose -------------------------------------------------------------- */
+  .md__p {
+    margin-block-end: var(--space-4);
+    text-wrap: pretty;
+  }
+
+  .md__h {
+    margin-block: var(--space-5) var(--space-2);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-snug);
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-text-primary);
+  }
+
+  .md__h:first-child {
+    margin-block-start: 0;
+  }
+
+  .md__strong {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+  }
+
+  .md__link {
+    color: var(--color-text-link);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+    transition: var(--transition-colors);
+  }
+
+  .md__link:hover {
+    color: var(--color-text-link-hover);
+    text-decoration-thickness: 2px;
+  }
+
+  /* --- lists -------------------------------------------------------------- */
+  .md__list {
+    margin-block-end: var(--space-4);
+    padding-inline-start: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5);
+  }
+
+  .md__list .md__list {
+    /* A nested list is part of its parent item, not a new section. */
+    margin-block: var(--space-1-5) 0;
+  }
+
+  .md__item {
+    padding-inline-start: var(--space-1);
+  }
+
+  /* A single-paragraph item is the common case, and it should not carry a
+     paragraph's bottom margin inside a tight list. */
+  .md__item > .md__p:only-child {
+    margin-block-end: 0;
+  }
+
+  .md__item::marker {
+    color: var(--color-text-tertiary);
+    font-weight: var(--font-weight-medium);
+  }
+
+  /* --- tables ------------------------------------------------------------- */
+  .md__table-scroll {
+    margin-block-end: var(--space-4);
+    border: var(--border-hairline) solid var(--color-table-border);
+    border-radius: var(--radius-md);
+    /* The scroll container is focusable so it can be reached and scrolled from
+       the keyboard; the ring has to be visible on it. */
+    outline-offset: 2px;
+  }
+
+  .md__table-scroll:focus-visible {
+    outline: var(--focus-ring);
+  }
+
+  .md__table {
+    inline-size: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-md);
+    line-height: var(--leading-snug);
+  }
+
+  .md__table th,
+  .md__table td {
+    padding: var(--space-2-5) var(--space-3);
+    text-align: start;
+    vertical-align: top;
+    /* Cells are dense; a wrapped label is better than a table that scrolls
+       for one long header. */
+    border-block-end: var(--border-hairline) solid var(--color-table-border);
+  }
+
+  .md__table th {
+    position: sticky;
+    inset-block-start: 0;
+    background-color: var(--color-table-header);
+
+    font-size: var(--font-size-2xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+  }
+
+  .md__table tbody tr:nth-child(even) {
+    background-color: var(--color-table-row-alt);
+  }
+
+  .md__table tbody tr:last-child td {
+    border-block-end: none;
+  }
+
+  .md__table [data-align='end'] {
+    text-align: end;
+    /* Figures line up on the decimal point. This is the whole reason the
+       renderer bothers to detect numeric columns. */
+    font-variant-numeric: tabular-nums;
+  }
+
+  .md__table [data-align='center'] {
+    text-align: center;
+  }
+
+  .md__table [data-align='start'] {
+    text-align: start;
+  }
+
+  /* --- code --------------------------------------------------------------- */
+  .md__inline-code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    padding: 0.1em 0.35em;
+    border-radius: var(--radius-xs);
+    background-color: var(--color-code-inline-surface);
+    color: var(--color-code-inline-text);
+    overflow-wrap: anywhere;
+  }
+
+  .md__pre {
+    margin-block-end: var(--space-4);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    background-color: var(--color-code-surface);
+    color: var(--color-code-text);
+
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .md__code {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-md);
+    line-height: var(--leading-normal);
+    white-space: pre;
+  }
+
+  /* --- quote & rule ------------------------------------------------------- */
+  .md__quote {
+    margin-block-end: var(--space-4);
+    padding-inline-start: var(--space-4);
+    border-inline-start: var(--border-thick) solid var(--color-quote-bar);
+    color: var(--color-text-secondary);
+    font-style: italic;
+  }
+
+  .md__quote > :last-child {
+    margin-block-end: 0;
+  }
+
+  .md__rule {
+    margin-block: var(--space-5);
+    border: none;
+    block-size: 1px;
+    background-image: var(--gradient-divider);
+  }
+
+  /* --- citations ----------------------------------------------------------
+     A superscript number that is genuinely a control: it takes focus, it has
+     a hit area bigger than a 10px glyph, and it says what it does. */
+  .md__cite {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-inline-size: 1.15rem;
+    min-block-size: 1.15rem;
+    margin-inline: 1px;
+    padding: 0;
+
+    border: var(--border-hairline) solid var(--color-border-brand);
+    border-radius: var(--radius-xs);
+    background-color: var(--color-brand-soft);
+    color: var(--color-text-brand);
+
+    font-size: var(--font-size-3xs);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1;
+    cursor: pointer;
+    vertical-align: super;
+
+    transition: var(--transition-colors), var(--transition-transform);
+  }
+
+  .md__cite sup {
+    font-size: inherit;
+    vertical-align: baseline;
+  }
+
+  .md__cite:hover {
+    background-color: var(--color-brand-soft-hover);
+    transform: translateY(-1px);
+  }
+
+  .md__cite:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: 1px;
+  }
+
+  /* A number with no source behind it: still shown, because the model wrote
+     it and hiding it would edit the answer — but visibly not a control. */
+  .md__cite--inert {
+    border: none;
+    background: none;
+    color: var(--color-text-muted);
+    cursor: default;
+    padding-inline: 1px;
+  }
+}

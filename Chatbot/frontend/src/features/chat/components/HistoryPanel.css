@@ -1,0 +1,342 @@
+/* ==========================================================================
+   HistoryPanel
+   --------------------------------------------------------------------------
+   A 320px sheet that slides in from the rail side, over the conversation. It
+   is always in the DOM and always laid out — hidden with `translate` +
+   `visibility` rather than `display: none`, so the slide has something to
+   animate and the panel's scroll position survives being closed.
+
+   `visibility: hidden` is doing real work: it takes every control inside out
+   of the tab order while closed, which `opacity: 0` alone would not.
+   ========================================================================== */
+
+@layer layout {
+  .history {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    /* Above its own scrim: the two tokens are adjacent steps in the scale
+       precisely so a sheet and its dimmer do not need a hand-picked number. */
+    z-index: var(--z-modal);
+
+    display: flex;
+    flex-direction: column;
+    inline-size: min(var(--width-panel), 88vw);
+
+    background-color: var(--color-surface-overlay);
+    border-inline-end: var(--border-hairline) solid var(--color-border);
+    box-shadow: var(--shadow-2xl);
+
+    visibility: hidden;
+    translate: -100% 0;
+    transition:
+      translate var(--duration-base) var(--ease-emphasized),
+      visibility var(--duration-base);
+  }
+
+  .history[data-open] {
+    visibility: visible;
+    translate: 0 0;
+  }
+
+  .history:focus {
+    outline: none;
+  }
+
+  /* --- the scrim -----------------------------------------------------------
+     A real button, so dismissing by clicking away is one code path with the
+     close button rather than a div with a handler. `tabIndex={-1}` keeps it
+     out of the tab order — Escape and the visible close button are the
+     keyboard ways out. */
+  .history__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: var(--z-scrim);
+    border: none;
+    padding: 0;
+
+    background-color: var(--color-scrim);
+    cursor: default;
+
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      var(--transition-opacity),
+      visibility var(--duration-base);
+  }
+
+  .history__scrim[data-open] {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* --- head ---------------------------------------------------------------- */
+  .history__head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex: none;
+
+    padding: var(--space-4);
+    border-block-end: var(--border-hairline) solid var(--color-border-subtle);
+  }
+
+  .history__title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex: 1 1 auto;
+
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+  }
+
+  .history__title > .icon {
+    color: var(--color-brand);
+  }
+
+  .history__icon-btn {
+    display: grid;
+    place-items: center;
+    flex: none;
+
+    inline-size: var(--control-height-sm);
+    block-size: var(--control-height-sm);
+    border: none;
+    border-radius: var(--radius-md);
+    background: none;
+
+    color: var(--color-text-tertiary);
+    cursor: pointer;
+    transition: var(--transition-colors);
+  }
+
+  .history__icon-btn:hover:not(:disabled) {
+    background-color: var(--color-surface-hover);
+    color: var(--color-text-primary);
+  }
+
+  .history__icon-btn:disabled {
+    color: var(--color-text-disabled);
+    cursor: default;
+  }
+
+  .history__icon-btn:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: -2px;
+  }
+
+  .history__spin {
+    animation: spin 900ms linear infinite;
+  }
+
+  /* --- body ---------------------------------------------------------------- */
+  .history__body {
+    flex: 1 1 auto;
+    min-block-size: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    padding: var(--space-3) var(--space-2) var(--space-4);
+  }
+
+  .history__group + .history__group {
+    margin-block-start: var(--space-4);
+  }
+
+  .history__group-label {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: var(--z-sticky);
+
+    padding: var(--space-1-5) var(--space-2);
+    margin-block-end: var(--space-1);
+
+    background-color: var(--color-surface-overlay);
+    font-size: var(--font-size-3xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .history__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-0-5);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* --- one conversation ---------------------------------------------------- */
+  .history__item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    inline-size: 100%;
+
+    padding: var(--space-2-5) var(--space-3);
+    border: var(--border-hairline) solid transparent;
+    border-radius: var(--radius-md);
+    background: none;
+
+    text-align: start;
+    cursor: pointer;
+    transition: var(--transition-colors);
+  }
+
+  .history__item:hover {
+    background-color: var(--color-surface-hover);
+  }
+
+  .history__item:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: -1px;
+  }
+
+  /* The open conversation: tinted *and* outlined. In dark mode the selected
+     tint is a 12% green wash, which on its own is too close to the hover
+     state to tell apart at a glance — the border is what makes it read as
+     "this one" rather than "the pointer is here". */
+  .history__item[data-current] {
+    background-color: var(--color-surface-selected);
+    border-color: var(--color-border-brand);
+  }
+
+  .history__item-title {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--leading-snug);
+    color: var(--color-text-primary);
+
+    /* Two lines, then ellipsis: a title is the first 120 characters of a
+       question, and one line is often not enough to tell two apart. */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+
+  .history__item-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    flex-wrap: wrap;
+
+    font-size: var(--font-size-2xs);
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .history__badge {
+    padding: 0 var(--space-1-5);
+    border-radius: var(--radius-xs);
+    background-color: var(--color-surface-active);
+    color: var(--color-text-tertiary);
+    letter-spacing: var(--tracking-wide);
+    font-variant-numeric: normal;
+  }
+
+  /* --- empty / error ------------------------------------------------------- */
+  .history__state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+
+    padding: var(--space-10) var(--space-4);
+    text-align: center;
+  }
+
+  .history__state-icon {
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-1);
+  }
+
+  .history__state-title {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+  }
+
+  .history__state-text {
+    font-size: var(--font-size-xs);
+    line-height: var(--leading-snug);
+    color: var(--color-text-tertiary);
+    text-wrap: pretty;
+  }
+
+  .history__retry {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    margin-block-start: var(--space-2);
+
+    padding: var(--space-1-5) var(--space-3);
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface);
+
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: var(--transition-colors);
+  }
+
+  .history__retry:hover {
+    background-color: var(--color-surface-hover);
+  }
+
+  .history__retry:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* --- foot ---------------------------------------------------------------- */
+  .history__foot {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    flex: none;
+
+    padding: var(--space-3) var(--space-4);
+    border-block-start: var(--border-hairline) solid var(--color-border-subtle);
+    background-color: var(--color-surface-sunken);
+
+    font-size: var(--font-size-2xs);
+    line-height: var(--leading-snug);
+    color: var(--color-text-muted);
+    text-wrap: pretty;
+  }
+
+  .history__foot > .icon {
+    flex: none;
+    margin-block-start: 1px;
+  }
+
+  /* --- skeleton ------------------------------------------------------------ */
+  .history__skeleton-label {
+    block-size: 0.5rem;
+    inline-size: 4rem;
+    margin: var(--space-2);
+    border-radius: var(--radius-xs);
+  }
+
+  .history__skeleton-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-2-5) var(--space-3);
+  }
+
+  .history__skeleton-line {
+    block-size: 0.7rem;
+    border-radius: var(--radius-xs);
+  }
+}

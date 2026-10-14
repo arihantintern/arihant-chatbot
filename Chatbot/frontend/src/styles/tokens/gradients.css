@@ -1,0 +1,133 @@
+/* ==========================================================================
+   gradients.css — every gradient in the product, named
+   --------------------------------------------------------------------------
+   Mirrors the Arihant GoalPlanner gradient sheet (lib/core/theme/
+   app_gradients.dart) and extends it with the pieces a chat interface needs:
+   the ambient page wash, the streaming-answer shimmer, the fade that tells
+   you a scroll container has more content below.
+
+   Never inline a `linear-gradient()` in a component. Add it here so the
+   brand's washes stay a closed set and dark mode stays in step.
+   ========================================================================== */
+
+@layer tokens {
+  :root {
+    /* --- brand fills ----------------------------------------------------- */
+    /* The primary CTA. Mid-green → brand green, matching AppGradients.primaryCta. */
+    --gradient-brand: linear-gradient(135deg, var(--green-400) 0%, var(--green-500) 100%);
+    --gradient-brand-hover: linear-gradient(135deg, var(--green-300) 0%, var(--green-400) 100%);
+    /* Green → violet: the "AI" gradient. Used on the agent avatar, the
+       thinking indicator, and the active state of the composer. */
+    --gradient-intelligence: linear-gradient(
+      135deg,
+      var(--green-400) 0%,
+      var(--green-500) 38%,
+      var(--violet-500) 100%
+    );
+    --gradient-accent: linear-gradient(135deg, var(--violet-400) 0%, var(--violet-600) 100%);
+
+    /* --- text fills -------------------------------------------------------
+       Pair with `background-clip: text` (see .u-text-gradient). */
+    --gradient-text-brand: linear-gradient(100deg, var(--green-500) 0%, var(--violet-500) 100%);
+
+    /* --- ambient page wash -------------------------------------------------
+       Two soft radial pools of brand color bled into the canvas. This is what
+       keeps large empty areas — the auth screens, an empty conversation —
+       from reading as a blank page. */
+    --gradient-canvas-wash:
+      radial-gradient(
+        60rem 40rem at 12% -10%,
+        rgb(var(--rgb-green-400) / 0.16) 0%,
+        transparent 62%
+      ),
+      radial-gradient(
+        52rem 36rem at 92% 8%,
+        rgb(var(--rgb-violet-400) / 0.14) 0%,
+        transparent 60%
+      );
+
+    /* A slow-moving aurora for hero moments (login, the first-run splash).
+       Animated by @keyframes aurora-drift in utilities/animations.css. */
+    --gradient-aurora: conic-gradient(
+      from 180deg at 50% 50%,
+      rgb(var(--rgb-green-400) / 0.5) 0deg,
+      rgb(var(--rgb-violet-400) / 0.45) 110deg,
+      rgb(var(--rgb-blue-500) / 0.35) 210deg,
+      rgb(var(--rgb-green-400) / 0.5) 360deg
+    );
+
+    /* --- surface treatments ----------------------------------------------- */
+    /* A card that should feel lit from above rather than flatly filled. */
+    --gradient-surface-lift: linear-gradient(
+      180deg,
+      rgb(var(--rgb-white) / 0.06) 0%,
+      rgb(var(--rgb-white) / 0) 40%
+    );
+    /* The hairline that runs along a section divider and fades at both ends. */
+    --gradient-divider: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--color-border) 18%,
+      var(--color-border) 82%,
+      transparent 100%
+    );
+
+    /* --- motion fills ------------------------------------------------------ */
+    /* The travelling highlight on skeletons and on a streaming answer. */
+    --gradient-shimmer: linear-gradient(
+      100deg,
+      transparent 20%,
+      var(--color-skeleton-sheen) 50%,
+      transparent 80%
+    );
+    /* The animated bar under the "thinking" trace. */
+    --gradient-progress-indeterminate: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--color-accent) 45%,
+      var(--color-brand) 55%,
+      transparent 100%
+    );
+
+    /* --- scroll affordances -------------------------------------------------
+       Masks, not overlays — they work over any background. Apply with
+       `mask-image`, so content genuinely fades instead of being covered. */
+    --mask-fade-bottom: linear-gradient(180deg, #000 0%, #000 88%, transparent 100%);
+    --mask-fade-top: linear-gradient(180deg, transparent 0%, #000 6%, #000 100%);
+    --mask-fade-y: linear-gradient(
+      180deg,
+      transparent 0%,
+      #000 5%,
+      #000 95%,
+      transparent 100%
+    );
+    --mask-fade-right: linear-gradient(90deg, #000 0%, #000 88%, transparent 100%);
+  }
+
+  [data-theme='dark'] {
+    /* The wash needs more punch on a near-black canvas — the same opacities
+       read as nothing at all down here. */
+    --gradient-canvas-wash:
+      radial-gradient(
+        62rem 42rem at 10% -12%,
+        rgb(var(--rgb-green-400) / 0.14) 0%,
+        transparent 60%
+      ),
+      radial-gradient(
+        54rem 38rem at 94% 4%,
+        rgb(var(--rgb-violet-400) / 0.16) 0%,
+        transparent 58%
+      ),
+      radial-gradient(
+        40rem 40rem at 50% 110%,
+        rgb(var(--rgb-blue-500) / 0.1) 0%,
+        transparent 60%
+      );
+
+    --gradient-surface-lift: linear-gradient(
+      180deg,
+      rgb(var(--rgb-white) / 0.05) 0%,
+      rgb(var(--rgb-white) / 0) 45%
+    );
+  }
+}

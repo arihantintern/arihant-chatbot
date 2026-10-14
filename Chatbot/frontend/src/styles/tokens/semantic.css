@@ -1,0 +1,310 @@
+/* ==========================================================================
+   semantic.css — what the colors MEAN
+   --------------------------------------------------------------------------
+   TIER 2 of the token system, and the only color layer components may touch.
+   Every variable here answers a UI question ("what color is a card?"), never
+   a paint question ("what is green-400?").
+
+   Both themes are defined in full — dark is designed, not inverted. The theme
+   is chosen by `data-theme` on <html>, which the pre-paint script in
+   index.html sets before the first frame so there is no flash. See
+   src/context/ThemeContext for the runtime toggle.
+
+   Naming: --color-<role>-<variant>
+       role      surface | border | text | brand | accent | ...
+       variant   default (omitted) | subtle | strong | hover | soft | on
+   ========================================================================== */
+
+@layer tokens {
+  /* ======================================================================
+     LIGHT — the default. Paper-white surfaces on a faintly cool canvas, so
+     white cards still separate from the page without a heavy border.
+     ====================================================================== */
+  :root,
+  [data-theme='light'] {
+    color-scheme: light;
+
+    /* --- canvas & surfaces ------------------------------------------- */
+    --color-canvas: var(--ink-50);
+    --color-canvas-inset: var(--ink-100);
+    --color-surface: var(--ink-0);
+    --color-surface-raised: var(--ink-0);
+    --color-surface-sunken: var(--ink-50);
+    --color-surface-hover: var(--ink-50);
+    --color-surface-active: var(--ink-100);
+    --color-surface-selected: var(--green-50);
+    --color-surface-disabled: var(--ink-100);
+    /* frosted panels — pair with --blur-panel */
+    --color-surface-glass: rgb(var(--rgb-white) / 0.72);
+    --color-surface-glass-strong: rgb(var(--rgb-white) / 0.88);
+    /* the highest layer: menus, popovers, command palette */
+    --color-surface-overlay: var(--ink-0);
+
+    /* --- borders ------------------------------------------------------ */
+    --color-border-subtle: var(--ink-100);
+    --color-border: var(--ink-200);
+    --color-border-strong: var(--ink-300);
+    --color-border-hover: var(--ink-300);
+    --color-border-brand: var(--green-300);
+    --color-border-accent: var(--violet-300);
+    /* hairline that reads as a highlight on the top edge of a raised card */
+    --color-border-glint: rgb(var(--rgb-white) / 0.9);
+
+    /* --- text --------------------------------------------------------- */
+    --color-text-primary: var(--ink-900);
+    --color-text-secondary: var(--ink-600);
+    --color-text-tertiary: var(--ink-500);
+    --color-text-muted: var(--ink-400);
+    --color-text-placeholder: var(--ink-400);
+    --color-text-disabled: var(--ink-300);
+    --color-text-inverse: var(--ink-0);
+    --color-text-brand: var(--green-600);
+    --color-text-accent: var(--violet-600);
+    --color-text-link: var(--green-600);
+    --color-text-link-hover: var(--green-700);
+
+    /* --- brand (primary action) --------------------------------------- */
+    --color-brand: var(--green-500);
+    --color-brand-hover: var(--green-600);
+    --color-brand-active: var(--green-700);
+    --color-brand-on: var(--ink-0); /* text/icon on a brand fill */
+    --color-brand-soft: var(--green-50); /* tinted background          */
+    --color-brand-soft-hover: var(--green-100);
+    --color-brand-ring: rgb(var(--rgb-green-500) / 0.28);
+    --color-brand-glow: rgb(var(--rgb-green-500) / 0.32);
+
+    /* --- accent (secondary / AI affordances) -------------------------- */
+    --color-accent: var(--violet-500);
+    --color-accent-hover: var(--violet-600);
+    --color-accent-active: var(--violet-700);
+    --color-accent-on: var(--ink-0);
+    --color-accent-soft: var(--violet-50);
+    --color-accent-soft-hover: var(--violet-100);
+    --color-accent-ring: rgb(var(--rgb-violet-400) / 0.3);
+    --color-accent-glow: rgb(var(--rgb-violet-400) / 0.3);
+
+    /* --- status ------------------------------------------------------- */
+    --color-success: var(--green-600);
+    --color-success-soft: var(--green-50);
+    --color-success-border: var(--green-200);
+    --color-success-on: var(--ink-0);
+
+    --color-warning: var(--amber-600);
+    --color-warning-soft: var(--amber-50);
+    --color-warning-border: var(--amber-100);
+    --color-warning-on: var(--ink-900);
+
+    --color-danger: var(--red-500);
+    --color-danger-hover: var(--red-600);
+    --color-danger-soft: var(--red-50);
+    --color-danger-border: var(--red-100);
+    --color-danger-on: var(--ink-0);
+
+    --color-info: var(--blue-500);
+    --color-info-soft: var(--blue-50);
+    --color-info-border: var(--blue-100);
+    --color-info-on: var(--ink-0);
+
+    /* --- chat surfaces ------------------------------------------------ */
+    /* The person's own message: a solid, confident block. */
+    --color-bubble-user: var(--ink-900);
+    --color-bubble-user-text: var(--ink-0);
+    --color-bubble-user-border: transparent;
+    /* The bot's reply: quiet, so long answers stay readable. */
+    --color-bubble-bot: var(--ink-0);
+    --color-bubble-bot-text: var(--ink-900);
+    --color-bubble-bot-border: var(--ink-150);
+    /* The live "thinking / searching" trace that precedes an answer. */
+    --color-trace-surface: var(--violet-50);
+    --color-trace-border: var(--violet-100);
+    --color-trace-text: var(--violet-700);
+    --color-trace-pending: var(--ink-400);
+    --color-trace-active: var(--violet-500);
+    --color-trace-done: var(--green-500);
+    /* Source pills under an answer (a PDF, a URL, a CMOTS lookup). */
+    --color-citation-surface: var(--ink-50);
+    --color-citation-border: var(--ink-200);
+    --color-citation-text: var(--ink-600);
+
+    /* --- editorial content (rendered markdown answers) ---------------- */
+    --color-code-surface: var(--ink-950);
+    --color-code-text: var(--ink-150);
+    --color-code-inline-surface: var(--ink-100);
+    --color-code-inline-text: var(--violet-700);
+    --color-table-header: var(--ink-50);
+    --color-table-row-alt: var(--ink-25);
+    --color-table-border: var(--ink-150);
+    --color-quote-bar: var(--green-300);
+    --color-mark: rgb(var(--rgb-amber-500) / 0.25);
+
+    /* --- feedback & chrome -------------------------------------------- */
+    --color-focus-ring: var(--green-500);
+    --color-focus-ring-offset: var(--ink-0);
+    --color-scrim: rgb(var(--rgb-ink-900) / 0.42);
+    --color-skeleton: var(--ink-100);
+    --color-skeleton-sheen: var(--ink-0);
+    --color-scrollbar-thumb: var(--ink-200);
+    --color-scrollbar-thumb-hover: var(--ink-300);
+    --color-selection: rgb(var(--rgb-green-400) / 0.32);
+
+    /* --- data series (charts, allocation bars, comparison tables) ------
+       Ordered for maximum separation at a glance; the first two are the
+       brand hues so a single- or two-series chart still looks Arihant. */
+    --color-series-1: var(--green-500);
+    --color-series-2: var(--violet-500);
+    --color-series-3: var(--blue-500);
+    --color-series-4: var(--amber-500);
+    --color-series-5: var(--pink);
+    --color-series-6: var(--rust);
+
+    /* --- financial semantics ------------------------------------------
+       Gains/losses get their own names: in an Indian market context this
+       stays green-up/red-down, but routing it through a token means one
+       edit if that ever needs to invert. */
+    --color-gain: var(--green-600);
+    --color-gain-soft: var(--green-50);
+    --color-loss: var(--red-500);
+    --color-loss-soft: var(--red-50);
+    --color-neutral-value: var(--ink-500);
+  }
+
+  /* ======================================================================
+     DARK — the chatbot's signature look. Near-black navy canvas, surfaces
+     that step *up* in lightness, and brand hues shifted lighter so they
+     keep AA contrast on a dark fill.
+     ====================================================================== */
+  [data-theme='dark'] {
+    color-scheme: dark;
+
+    /* --- canvas & surfaces -------------------------------------------- */
+    --color-canvas: var(--ink-1000);
+    --color-canvas-inset: var(--ink-975);
+    --color-surface: var(--ink-950);
+    --color-surface-raised: var(--ink-925);
+    --color-surface-sunken: var(--ink-975);
+    --color-surface-hover: var(--ink-925);
+    --color-surface-active: var(--ink-850);
+    --color-surface-selected: rgb(var(--rgb-green-400) / 0.12);
+    --color-surface-disabled: var(--ink-925);
+    --color-surface-glass: rgb(22 24 38 / 0.68);
+    --color-surface-glass-strong: rgb(22 24 38 / 0.88);
+    --color-surface-overlay: var(--ink-900);
+
+    /* --- borders ------------------------------------------------------ */
+    --color-border-subtle: rgb(var(--rgb-white) / 0.06);
+    --color-border: rgb(var(--rgb-white) / 0.1);
+    --color-border-strong: rgb(var(--rgb-white) / 0.18);
+    --color-border-hover: rgb(var(--rgb-white) / 0.22);
+    --color-border-brand: rgb(var(--rgb-green-400) / 0.42);
+    --color-border-accent: rgb(var(--rgb-violet-400) / 0.42);
+    --color-border-glint: rgb(var(--rgb-white) / 0.08);
+
+    /* --- text --------------------------------------------------------- */
+    --color-text-primary: #eef0f6;
+    --color-text-secondary: #a8aec2;
+    --color-text-tertiary: #868da3;
+    --color-text-muted: #6b7288;
+    --color-text-placeholder: #6b7288;
+    --color-text-disabled: #4a5065;
+    --color-text-inverse: var(--ink-950);
+    --color-text-brand: var(--green-300);
+    --color-text-accent: var(--violet-300);
+    --color-text-link: var(--green-300);
+    --color-text-link-hover: var(--green-200);
+
+    /* --- brand -------------------------------------------------------- */
+    --color-brand: var(--green-400);
+    --color-brand-hover: var(--green-300);
+    --color-brand-active: var(--green-500);
+    --color-brand-on: var(--ink-1000); /* dark text on a bright green fill */
+    --color-brand-soft: rgb(var(--rgb-green-400) / 0.14);
+    --color-brand-soft-hover: rgb(var(--rgb-green-400) / 0.22);
+    --color-brand-ring: rgb(var(--rgb-green-400) / 0.4);
+    --color-brand-glow: rgb(var(--rgb-green-400) / 0.42);
+
+    /* --- accent ------------------------------------------------------- */
+    --color-accent: var(--violet-400);
+    --color-accent-hover: var(--violet-300);
+    --color-accent-active: var(--violet-500);
+    --color-accent-on: var(--ink-1000);
+    --color-accent-soft: rgb(var(--rgb-violet-400) / 0.16);
+    --color-accent-soft-hover: rgb(var(--rgb-violet-400) / 0.24);
+    --color-accent-ring: rgb(var(--rgb-violet-400) / 0.42);
+    --color-accent-glow: rgb(var(--rgb-violet-400) / 0.4);
+
+    /* --- status ------------------------------------------------------- */
+    --color-success: var(--green-300);
+    --color-success-soft: rgb(var(--rgb-green-400) / 0.14);
+    --color-success-border: rgb(var(--rgb-green-400) / 0.32);
+    --color-success-on: var(--ink-1000);
+
+    --color-warning: var(--amber-300);
+    --color-warning-soft: rgb(var(--rgb-amber-500) / 0.16);
+    --color-warning-border: rgb(var(--rgb-amber-500) / 0.34);
+    --color-warning-on: var(--ink-1000);
+
+    --color-danger: var(--red-400);
+    --color-danger-hover: var(--red-300);
+    --color-danger-soft: rgb(var(--rgb-red-500) / 0.16);
+    --color-danger-border: rgb(var(--rgb-red-500) / 0.34);
+    --color-danger-on: var(--ink-1000);
+
+    --color-info: var(--blue-300);
+    --color-info-soft: rgb(var(--rgb-blue-500) / 0.18);
+    --color-info-border: rgb(var(--rgb-blue-500) / 0.36);
+    --color-info-on: var(--ink-1000);
+
+    /* --- chat surfaces ------------------------------------------------ */
+    --color-bubble-user: rgb(var(--rgb-green-400) / 0.16);
+    --color-bubble-user-text: #eef0f6;
+    --color-bubble-user-border: rgb(var(--rgb-green-400) / 0.28);
+    --color-bubble-bot: var(--ink-925);
+    --color-bubble-bot-text: #eef0f6;
+    --color-bubble-bot-border: rgb(var(--rgb-white) / 0.07);
+    --color-trace-surface: rgb(var(--rgb-violet-400) / 0.1);
+    --color-trace-border: rgb(var(--rgb-violet-400) / 0.24);
+    --color-trace-text: var(--violet-200);
+    --color-trace-pending: #6b7288;
+    --color-trace-active: var(--violet-300);
+    --color-trace-done: var(--green-400);
+    --color-citation-surface: rgb(var(--rgb-white) / 0.05);
+    --color-citation-border: rgb(var(--rgb-white) / 0.1);
+    --color-citation-text: #a8aec2;
+
+    /* --- editorial content -------------------------------------------- */
+    --color-code-surface: #0b0c14;
+    --color-code-text: #d7dae6;
+    --color-code-inline-surface: rgb(var(--rgb-white) / 0.08);
+    --color-code-inline-text: var(--violet-200);
+    --color-table-header: rgb(var(--rgb-white) / 0.04);
+    --color-table-row-alt: rgb(var(--rgb-white) / 0.02);
+    --color-table-border: rgb(var(--rgb-white) / 0.09);
+    --color-quote-bar: var(--green-500);
+    --color-mark: rgb(var(--rgb-amber-500) / 0.3);
+
+    /* --- feedback & chrome -------------------------------------------- */
+    --color-focus-ring: var(--green-400);
+    --color-focus-ring-offset: var(--ink-1000);
+    --color-scrim: rgb(var(--rgb-ink-1000) / 0.68);
+    --color-skeleton: rgb(var(--rgb-white) / 0.06);
+    --color-skeleton-sheen: rgb(var(--rgb-white) / 0.12);
+    --color-scrollbar-thumb: rgb(var(--rgb-white) / 0.14);
+    --color-scrollbar-thumb-hover: rgb(var(--rgb-white) / 0.24);
+    --color-selection: rgb(var(--rgb-green-400) / 0.3);
+
+    /* --- data series --------------------------------------------------- */
+    --color-series-1: var(--green-400);
+    --color-series-2: var(--violet-400);
+    --color-series-3: var(--blue-300);
+    --color-series-4: var(--amber-300);
+    --color-series-5: var(--pink);
+    --color-series-6: var(--leaf);
+
+    /* --- financial semantics ------------------------------------------- */
+    --color-gain: var(--green-300);
+    --color-gain-soft: rgb(var(--rgb-green-400) / 0.14);
+    --color-loss: var(--red-400);
+    --color-loss-soft: rgb(var(--rgb-red-500) / 0.14);
+    --color-neutral-value: #868da3;
+  }
+}

@@ -1,0 +1,150 @@
+/* ==========================================================================
+   Citations — the source pills under an answer
+   --------------------------------------------------------------------------
+   Uses the `--color-citation-*` group, which exists for exactly this and is
+   quieter than a normal surface in both themes: the sources are supporting
+   evidence, and they must not compete with the answer they support.
+   ========================================================================== */
+
+@layer components {
+  .cites {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+
+    margin-block-start: var(--space-4);
+    padding-block-start: var(--space-3);
+    border-block-start: var(--border-hairline) solid var(--color-border-subtle);
+
+    /* The flash below animates this; declaring it here keeps the resting
+       state explicit rather than implied by the absence of an animation. */
+    border-radius: var(--radius-sm);
+  }
+
+  .cites__label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1-5);
+
+    font-size: var(--font-size-2xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+  }
+
+  .cites__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* --- the pill ----------------------------------------------------------- */
+  .cites__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    max-inline-size: 22rem;
+
+    padding: var(--space-1-5) var(--space-2-5);
+    border: var(--border-hairline) solid var(--color-citation-border);
+    border-radius: var(--radius-full);
+    background-color: var(--color-citation-surface);
+
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-citation-text);
+    text-align: start;
+    cursor: pointer;
+
+    transition:
+      var(--transition-colors),
+      var(--transition-transform),
+      var(--transition-shadow);
+  }
+
+  .cites__pill:hover {
+    color: var(--color-text-primary);
+    border-color: var(--color-border-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-xs);
+  }
+
+  .cites__pill:active {
+    transform: translateY(0);
+  }
+
+  .cites__pill:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  .cites__pill--link:hover {
+    border-color: var(--color-info-border);
+    color: var(--color-text-link);
+  }
+
+  .cites__text {
+    /* A report filename is long and a pill must not stretch the answer. */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .cites__icon {
+    flex: none;
+    color: var(--color-text-tertiary);
+    transition: var(--transition-colors);
+  }
+
+  .cites__pill:hover .cites__icon {
+    color: var(--color-brand);
+  }
+
+  .cites__icon--done {
+    color: var(--color-success);
+  }
+
+  .cites__pill:hover .cites__icon--done {
+    color: var(--color-success);
+  }
+
+  /* The arrow only appears on hover: at rest the pill should read as a label,
+     and eight of them each with a permanent arrow reads as a toolbar. */
+  .cites__go {
+    flex: none;
+    opacity: 0;
+    margin-inline-start: calc(var(--space-1) * -1);
+    transform: translateX(-3px);
+    transition: var(--transition-opacity), var(--transition-transform);
+  }
+
+  .cites__pill--link:hover .cites__go,
+  .cites__pill--link:focus-visible .cites__go {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* --- the flash ----------------------------------------------------------
+     Set when a `[3]` in the answer is clicked. The strip is already on screen
+     by then — the scroll brought it there — so this is about saying "this is
+     the thing you just asked for", which a tint does and a scroll does not. */
+  .cites[data-flash] {
+    animation: cite-flash 1.4s var(--ease-standard);
+  }
+
+  @keyframes cite-flash {
+    0%,
+    100% {
+      background-color: transparent;
+      box-shadow: none;
+    }
+    18% {
+      background-color: var(--color-brand-soft);
+      box-shadow: 0 0 0 var(--space-2) var(--color-brand-soft);
+    }
+  }
+}

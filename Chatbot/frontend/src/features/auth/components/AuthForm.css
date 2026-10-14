@@ -1,0 +1,85 @@
+/* ==========================================================================
+   AuthForm — the shared skeleton of both auth forms
+   --------------------------------------------------------------------------
+   One stylesheet for SignInForm and SignUpForm: they are the same form with
+   different fields, and giving them separate sheets would guarantee they
+   drifted apart on spacing.
+   ========================================================================== */
+
+@layer components {
+  .auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .auth-form__banner {
+    /* Above the fields: an error about the whole submission belongs where the
+       eye lands when it comes back to the form, not below the button. */
+    margin-block-end: calc(var(--space-1) * -1);
+  }
+
+  .auth-form__fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  /* A field and the thing that comments on it (the strength meter) — closer
+     together than two unrelated fields are, so the grouping is visible
+     without a box around it. */
+  .auth-form__field-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .auth-form__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .auth-form__foot {
+    text-align: center;
+    font-size: var(--font-size-md);
+    color: var(--color-text-secondary);
+  }
+
+  /* A button that reads as a link. It *is* a button — it switches a tab, it
+     does not navigate — and using an <a href="#"> for that would promise a
+     destination that does not exist. */
+  .auth-form__link {
+    display: inline;
+    font: inherit;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-link);
+    border-radius: var(--radius-xs);
+
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+    transition:
+      var(--transition-colors),
+      text-decoration-color var(--duration-fast) var(--ease-standard),
+      text-decoration-thickness var(--duration-fast) var(--ease-standard);
+  }
+
+  .auth-form__link:hover {
+    color: var(--color-text-link-hover);
+    text-decoration-color: currentColor;
+    text-decoration-thickness: 2px;
+  }
+
+  .auth-form__note {
+    padding-block-start: var(--space-1);
+    border-block-start: var(--border-hairline) solid var(--color-border-subtle);
+    font-size: var(--font-size-xs);
+    line-height: var(--leading-normal);
+    color: var(--color-text-tertiary);
+    text-wrap: pretty;
+  }
+}

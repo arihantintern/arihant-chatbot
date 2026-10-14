@@ -1,0 +1,62 @@
+/* ==========================================================================
+   AuthTabs
+   ========================================================================== */
+
+@layer components {
+  .auth-tabs {
+    position: relative;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+
+    padding: var(--space-1);
+    background-color: var(--color-surface-sunken);
+    border: var(--border-hairline) solid var(--color-border-subtle);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-inset);
+  }
+
+  .auth-tabs__thumb {
+    position: absolute;
+    inset-block: var(--space-1);
+    inset-inline-start: var(--space-1);
+    /* Width from the count, position from the index — so this works for two
+       tabs today and three if an SSO option ever lands beside them. */
+    inline-size: calc((100% - var(--space-2)) / var(--tab-count));
+
+    background-color: var(--color-surface);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-sm), var(--shadow-glint);
+
+    transform: translate3d(calc(var(--active-index) * 100%), 0, 0);
+    transition: transform var(--duration-base) var(--ease-spring);
+  }
+
+  .auth-tabs__tab {
+    position: relative;
+    z-index: 1;
+
+    block-size: var(--control-height-md);
+    padding-inline: var(--space-4);
+    border-radius: var(--radius-full);
+
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-text-tertiary);
+
+    transition: var(--transition-colors);
+  }
+
+  .auth-tabs__tab:hover {
+    color: var(--color-text-primary);
+  }
+
+  .auth-tabs__tab[aria-selected='true'] {
+    color: var(--color-text-primary);
+  }
+
+  .auth-tabs__tab:focus-visible {
+    outline-offset: -2px; /* inside the pill, so it never clips */
+  }
+}

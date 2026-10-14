@@ -1,0 +1,226 @@
+/* ==========================================================================
+   AuthShowcase — the brand half of the auth screen
+   --------------------------------------------------------------------------
+   Three layers: a drifting aurora, a faint grid, and the content. The aurora
+   is heavily blurred and slow enough that it never competes with the form for
+   attention — it exists so that a large empty panel reads as lit rather than
+   as unfinished.
+   ========================================================================== */
+
+@layer components {
+  .auth-showcase {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+
+    padding: var(--space-10);
+    background-color: var(--color-canvas-inset);
+    border-inline-end: var(--border-hairline) solid var(--color-border-subtle);
+  }
+
+  /* --- the ambience ------------------------------------------------------ */
+  .auth-showcase__aurora {
+    position: absolute;
+    /* Oversized so the rotation never brings an edge into view. */
+    inset: -30%;
+    z-index: var(--z-below);
+
+    background: var(--gradient-aurora);
+    filter: blur(80px) saturate(120%);
+    opacity: 0.4;
+
+    animation: aurora-drift 60s linear infinite;
+  }
+
+  [data-theme='dark'] .auth-showcase__aurora {
+    opacity: 0.28;
+  }
+
+  .auth-showcase__grid {
+    position: absolute;
+    inset: 0;
+    z-index: var(--z-below);
+
+    /* A 32px rule grid, faded out towards the bottom so it never reads as a
+       table. Two gradients rather than an image: no request, and it re-tints
+       itself in dark mode along with the border token. */
+    background-image:
+      linear-gradient(to right, var(--color-border-subtle) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--color-border-subtle) 1px, transparent 1px);
+    background-size: 32px 32px;
+    opacity: 0.7;
+    mask-image: radial-gradient(70% 60% at 30% 30%, #000 0%, transparent 100%);
+    -webkit-mask-image: radial-gradient(70% 60% at 30% 30%, #000 0%, transparent 100%);
+  }
+
+  /* --- the content ------------------------------------------------------- */
+  .auth-showcase__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    inline-size: 100%;
+    max-inline-size: 40rem;
+    margin-inline: auto;
+  }
+
+  .auth-showcase__logo {
+    animation: fade-in-down var(--duration-slow) var(--ease-standard) both;
+  }
+
+  .auth-showcase__lede {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    animation: fade-in-up var(--duration-slow) var(--ease-standard) both;
+    animation-delay: 60ms;
+  }
+
+  .auth-showcase__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-text-brand);
+  }
+
+  .auth-showcase__eyebrow-dot {
+    inline-size: 6px;
+    block-size: 6px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-brand);
+    box-shadow: var(--glow-brand-sm);
+    animation: pulse-soft var(--duration-ambient) var(--ease-in-out) infinite;
+  }
+
+  .auth-showcase__title {
+    max-inline-size: 22ch;
+  }
+
+  .auth-showcase__body {
+    max-inline-size: 46ch;
+  }
+
+  /* --- capability rows ---------------------------------------------------
+     Two up where there is room, one up where there is not. Four stacked rows
+     made this panel taller than a laptop screen, and a brand panel that has
+     to be scrolled to be read is a brand panel nobody reads. */
+  .auth-showcase__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: var(--space-5) var(--space-6);
+  }
+
+  .auth-showcase__item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3-5);
+  }
+
+  .auth-showcase__item-icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    inline-size: var(--avatar-size-md);
+    block-size: var(--avatar-size-md);
+
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+    border: var(--border-hairline) solid var(--color-border-subtle);
+    box-shadow: var(--shadow-xs), var(--shadow-glint);
+    color: var(--color-brand);
+
+    transition: var(--transition-transform), var(--transition-shadow);
+  }
+
+  /* The whole row is the hover target, not just the icon — it reads as one
+     object, so it should respond as one. */
+  .auth-showcase__item:hover .auth-showcase__item-icon {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md), var(--shadow-glint);
+  }
+
+  .auth-showcase__item-title {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-text-primary);
+  }
+
+  .auth-showcase__item-body {
+    margin-block-start: var(--space-0-5);
+    font-size: var(--font-size-sm);
+    line-height: var(--leading-normal);
+    color: var(--color-text-secondary);
+    max-inline-size: 34ch;
+  }
+
+  /* --- the product still ------------------------------------------------- */
+  .auth-showcase__proof {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-4);
+
+    background-color: var(--color-surface-glass);
+    backdrop-filter: var(--blur-panel);
+    -webkit-backdrop-filter: var(--blur-panel);
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+
+    animation: fade-in-up var(--duration-slower) var(--ease-spring) both;
+    animation-delay: 320ms;
+  }
+
+  .auth-showcase__bubble {
+    padding: var(--space-2-5) var(--space-3-5);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-sm);
+    line-height: var(--leading-normal);
+  }
+
+  .auth-showcase__bubble--ask {
+    align-self: flex-end;
+    max-inline-size: 80%;
+    background-color: var(--color-bubble-user);
+    border: var(--border-hairline) solid var(--color-bubble-user-border);
+    color: var(--color-bubble-user-text);
+    border-end-end-radius: var(--radius-xs);
+  }
+
+  .auth-showcase__bubble--answer {
+    background-color: var(--color-bubble-bot);
+    border: var(--border-hairline) solid var(--color-bubble-bot-border);
+    color: var(--color-bubble-bot-text);
+    border-end-start-radius: var(--radius-xs);
+  }
+
+  .auth-showcase__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1-5);
+    margin-block-start: var(--space-2-5);
+  }
+
+  .auth-showcase__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-0-5) var(--space-2);
+
+    background-color: var(--color-citation-surface);
+    border: var(--border-hairline) solid var(--color-citation-border);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-2xs);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-citation-text);
+  }
+
+  /* --- narrow screens ----------------------------------------------------
+     Below the two-column breakpoint the showcase is not shown at all; see
+     AuthScreen.css, which owns the layout decision. Nothing here needs a
+     media query — this file only ever describes the panel's inside. */
+}

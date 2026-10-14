@@ -1,0 +1,336 @@
+/* ==========================================================================
+   SearchPalette
+   --------------------------------------------------------------------------
+   Fixed to the viewport rather than to the chat, because it outranks
+   everything: `--z-palette` sits above modals in the scale for exactly this.
+   Anchored a little above centre — a list that grows downward from a centred
+   box ends up bottom-heavy, and the eye expects the field to stay put as
+   results arrive.
+   ========================================================================== */
+
+@layer components {
+  .palette {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-palette);
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .palette__scrim {
+    position: absolute;
+    inset: 0;
+    border: none;
+    padding: 0;
+
+    background-color: var(--color-scrim);
+    backdrop-filter: var(--blur-sm);
+    -webkit-backdrop-filter: var(--blur-sm);
+    cursor: default;
+
+    animation: fade-in var(--duration-fast) var(--ease-standard) both;
+  }
+
+  .palette__panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    inline-size: 100%;
+    max-inline-size: 42rem;
+    /* Room to grow, but never taller than the window — the results scroll
+       inside, the page never does. */
+    max-block-size: min(38rem, 100%);
+    margin-block-start: min(8vh, var(--space-16));
+
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: var(--radius-xl);
+    background-color: var(--color-surface-overlay);
+    box-shadow: var(--shadow-2xl);
+    overflow: hidden;
+  }
+
+  /* --- the field ----------------------------------------------------------- */
+  .palette__field {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex: none;
+
+    padding: var(--space-4) var(--space-4);
+    border-block-end: var(--border-hairline) solid var(--color-border-subtle);
+  }
+
+  .palette__field-icon {
+    flex: none;
+    color: var(--color-text-tertiary);
+  }
+
+  .palette__input {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+
+    border: none;
+    background: none;
+    font-family: inherit;
+    font-size: var(--font-size-lg);
+    color: var(--color-text-primary);
+  }
+
+  .palette__input:focus {
+    outline: none;
+  }
+
+  .palette__input::placeholder {
+    color: var(--color-text-placeholder);
+  }
+
+  /* --- results ------------------------------------------------------------- */
+  .palette__results {
+    flex: 1 1 auto;
+    min-block-size: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: var(--space-2);
+  }
+
+  .palette__tip,
+  .palette__empty {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+
+    padding: var(--space-6) var(--space-5);
+    font-size: var(--font-size-sm);
+    line-height: var(--leading-normal);
+    color: var(--color-text-tertiary);
+    text-wrap: pretty;
+  }
+
+  .palette__tip > .icon {
+    flex: none;
+    margin-block-start: 3px;
+    color: var(--color-info);
+  }
+
+  .palette__result {
+    border-radius: var(--radius-md);
+    border: var(--border-hairline) solid transparent;
+    transition: var(--transition-colors);
+  }
+
+  /* Hover and arrow-keys drive the same state, so the pointer and the keyboard
+     never disagree about which row is "the one Enter would open". */
+  .palette__result[data-active='true'] {
+    background-color: var(--color-surface-hover);
+    border-color: var(--color-border-subtle);
+  }
+
+  .palette__result[data-open] {
+    background-color: var(--color-surface-sunken);
+    border-color: var(--color-border);
+  }
+
+  .palette__result-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5);
+    inline-size: 100%;
+
+    padding: var(--space-3);
+    border: none;
+    background: none;
+    text-align: start;
+    cursor: pointer;
+  }
+
+  .palette__result-row:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: -2px;
+    border-radius: var(--radius-md);
+  }
+
+  .palette__result-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+  }
+
+  .palette__result-question {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--leading-snug);
+    color: var(--color-text-primary);
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+
+  .palette__result-when {
+    flex: none;
+    font-size: var(--font-size-2xs);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-muted);
+  }
+
+  .palette__result-snippet {
+    font-size: var(--font-size-xs);
+    line-height: var(--leading-snug);
+    color: var(--color-text-tertiary);
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+
+  .palette__result-foot {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .palette__result-source {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+
+    font-size: var(--font-size-2xs);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-text-muted);
+  }
+
+  .palette__result-source[data-tone='brand'] > .icon {
+    color: var(--color-brand);
+  }
+
+  .palette__result-source[data-tone='info'] > .icon {
+    color: var(--color-info);
+  }
+
+  .palette__result-source[data-tone='accent'] > .icon {
+    color: var(--color-accent);
+  }
+
+  .palette__result-source[data-tone='warning'] {
+    color: var(--color-warning);
+  }
+
+  .palette__result-chevron {
+    margin-inline-start: auto;
+    color: var(--color-text-muted);
+    transition: var(--transition-transform);
+  }
+
+  .palette__result-chevron.is-open {
+    rotate: 180deg;
+  }
+
+  /* --- the opened answer --------------------------------------------------- */
+  .palette__result-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+
+    padding: var(--space-1) var(--space-4) var(--space-4);
+    /* A long answer scrolls within the row rather than pushing the rest of the
+       results out of reach. */
+    max-block-size: 20rem;
+    overflow-y: auto;
+
+    animation: fade-in var(--duration-fast) var(--ease-standard) both;
+  }
+
+  .palette__result-none {
+    font-size: var(--font-size-sm);
+    font-style: italic;
+    color: var(--color-text-tertiary);
+  }
+
+  .palette__result-actions {
+    display: flex;
+    gap: var(--space-2);
+    padding-block-start: var(--space-2);
+    border-block-start: var(--border-hairline) solid var(--color-border-subtle);
+  }
+
+  .palette__ask {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1-5);
+
+    padding: var(--space-1-5) var(--space-3);
+    border: var(--border-hairline) solid var(--color-border-brand);
+    border-radius: var(--radius-full);
+    background-color: var(--color-brand-soft);
+
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-brand);
+    cursor: pointer;
+    transition: var(--transition-colors);
+  }
+
+  .palette__ask:hover {
+    background-color: var(--color-brand-soft-hover);
+  }
+
+  .palette__ask:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  .palette__mark {
+    background-color: var(--color-mark);
+    color: inherit;
+    border-radius: 2px;
+    padding: 0 1px;
+  }
+
+  /* --- foot ---------------------------------------------------------------- */
+  .palette__foot {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex: none;
+
+    padding: var(--space-2-5) var(--space-4);
+    border-block-start: var(--border-hairline) solid var(--color-border-subtle);
+    background-color: var(--color-surface-sunken);
+
+    font-size: var(--font-size-2xs);
+    color: var(--color-text-muted);
+  }
+
+  .palette__foot > span {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .palette__key {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 1px var(--space-1-5);
+    border: var(--border-hairline) solid var(--color-border-subtle);
+    border-radius: var(--radius-xs);
+    background-color: var(--color-surface);
+
+    font-family: var(--font-sans);
+    font-size: var(--font-size-3xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-tertiary);
+  }
+}

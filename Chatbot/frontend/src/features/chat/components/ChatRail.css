@@ -1,0 +1,128 @@
+/* ==========================================================================
+   ChatRail
+   --------------------------------------------------------------------------
+   76px (`--width-rail`) of permanent chrome on the inline-start edge. It must
+   not clip: the tooltips live inside it and open outward, so no `overflow`
+   here.
+
+   Below 900px it becomes a horizontal bar at the bottom of the screen — the
+   same three buttons, moved to where a thumb is, rather than a hamburger that
+   hides them behind a second tap.
+   ========================================================================== */
+
+@layer layout {
+  .rail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    flex: none;
+
+    inline-size: var(--width-rail);
+    padding-block: var(--space-4);
+    border-inline-end: var(--border-hairline) solid var(--color-border-subtle);
+    background-color: var(--color-canvas-inset);
+  }
+
+  .rail__rule {
+    inline-size: 24px;
+    block-size: 1px;
+    background-color: var(--color-border);
+    margin-block: var(--space-1);
+  }
+
+  /* --- buttons ------------------------------------------------------------- */
+  .rail__btn {
+    display: grid;
+    place-items: center;
+
+    inline-size: var(--control-height-lg);
+    block-size: var(--control-height-lg);
+    border: var(--border-hairline) solid transparent;
+    border-radius: var(--radius-lg);
+    background: none;
+
+    color: var(--color-text-tertiary);
+    cursor: pointer;
+
+    transition:
+      var(--transition-colors),
+      var(--transition-transform),
+      var(--transition-shadow);
+  }
+
+  .rail__btn:hover:not(:disabled) {
+    background-color: var(--color-surface-hover);
+    border-color: var(--color-border-subtle);
+    color: var(--color-text-primary);
+  }
+
+  .rail__btn:active:not(:disabled) {
+    transform: scale(0.94);
+  }
+
+  .rail__btn:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  .rail__btn:disabled {
+    color: var(--color-text-disabled);
+    cursor: not-allowed;
+  }
+
+  /* The open panel's button stays lit, so the rail says which overlay is up. */
+  .rail__btn[data-active] {
+    background-color: var(--color-brand-soft);
+    border-color: var(--color-border-brand);
+    color: var(--color-text-brand);
+  }
+
+  /* New conversation is the rail's primary action and looks like it. */
+  .rail__btn--primary:not(:disabled) {
+    background-image: var(--gradient-brand);
+    color: var(--color-brand-on);
+  }
+
+  .rail__btn--primary:not(:disabled):hover {
+    background-image: var(--gradient-brand-hover);
+    color: var(--color-brand-on);
+    border-color: transparent;
+    box-shadow: var(--glow-brand-sm);
+    transform: translateY(-1px);
+  }
+
+  .rail__btn--primary:disabled {
+    background-color: var(--color-surface-disabled);
+  }
+
+  /* --- narrow: a bottom bar ------------------------------------------------ */
+  @media (max-width: 900px) {
+    .rail {
+      flex-direction: row;
+      justify-content: center;
+      gap: var(--space-4);
+
+      inline-size: 100%;
+      /* Order matters for the DOM (the rail is first, for the keyboard) but
+         not for the layout — `order` moves it under the conversation without
+         moving it in the tab sequence. */
+      order: 2;
+
+      padding-block: var(--space-2);
+      padding-inline: var(--gutter);
+      /* Clear of the home indicator on a notched phone. */
+      padding-block-end: max(var(--space-2), env(safe-area-inset-bottom));
+
+      border-inline-end: none;
+      border-block-start: var(--border-hairline) solid var(--color-border-subtle);
+    }
+
+    .rail__rule {
+      inline-size: 1px;
+      block-size: 24px;
+      margin-block: 0;
+      margin-inline: var(--space-1);
+    }
+  }
+}

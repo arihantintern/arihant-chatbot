@@ -1,0 +1,27 @@
+/* ==========================================================================
+   layers.css — the z-index scale
+   --------------------------------------------------------------------------
+   One ordered list, so stacking is a design decision made here rather than a
+   `z-index: 99999` argument scattered across component files.
+
+   If two things collide, the fix is to add a named step in the right place —
+   not to invent a bigger number at the call site.
+   ========================================================================== */
+
+@layer tokens {
+  :root {
+    --z-below: -1; /* decorative washes painted behind content   */
+    --z-base: 0;
+    --z-raised: 10; /* cards lifted on hover                     */
+    --z-sticky: 100; /* sticky table headers, date separators     */
+    --z-nav: 200; /* the app rail and top bar                  */
+    --z-composer: 300; /* the message composer, pinned above chat   */
+    --z-dropdown: 400; /* menus, selects, autocomplete              */
+    --z-scrim: 500; /* the dimmer behind a modal                 */
+    --z-modal: 600; /* dialogs and sheets                        */
+    --z-palette: 700; /* the ⌘K command palette outranks modals    */
+    --z-popover: 800; /* popovers anchored above everything        */
+    --z-toast: 900; /* transient notifications                   */
+    --z-tooltip: 1000; /* always the very top                       */
+  }
+}

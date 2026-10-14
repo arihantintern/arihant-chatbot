@@ -1,0 +1,212 @@
+/* ==========================================================================
+   EmptyState — the opening screen of a conversation
+   --------------------------------------------------------------------------
+   The one place in the chat that is allowed to be a *composition* rather than
+   a container: a wash behind the mark, a display-size question, and four
+   cards that arrive in sequence. It is the first frame anybody sees after
+   signing in, and it is also the frame that is empty of content — which makes
+   it the right and only place to spend the design budget.
+   ========================================================================== */
+
+@layer components {
+  .empty {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    align-items: center;
+
+    padding-block: var(--space-10) var(--space-6);
+    text-align: center;
+  }
+
+  /* An aurora wash behind the mark. Painted with the brand gradient and blurred
+     into the canvas, so it reads as light rather than as a shape. */
+  .empty__glow {
+    position: absolute;
+    inset-block-start: -12%;
+    inset-inline-start: 50%;
+    translate: -50% 0;
+    z-index: var(--z-below);
+
+    inline-size: min(30rem, 90%);
+    aspect-ratio: 1;
+    border-radius: var(--radius-full);
+
+    background-image: var(--gradient-aurora);
+    opacity: 0.28;
+    filter: blur(70px);
+
+    /* Local, not `--duration-ambient` (2.4s): that token is for pulses and
+       shimmers, and a wash this large drifting on a 2-second cycle reads as
+       agitation. Ambience has to be slow enough that you cannot watch it. */
+    --empty-drift: 22s;
+    animation: aurora-drift var(--empty-drift) var(--ease-in-out) infinite alternate;
+  }
+
+  .empty__head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+    max-inline-size: var(--measure-narrow);
+  }
+
+  .empty__mark {
+    animation: scale-in var(--duration-slow) var(--ease-spring) both;
+  }
+
+  .empty__title {
+    font-family: var(--font-display);
+    font-size: var(--font-size-display-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tighter);
+    color: var(--color-text-primary);
+    text-wrap: balance;
+
+    animation: fade-in-up var(--duration-slow) var(--ease-decelerate) both;
+  }
+
+  .empty__lead {
+    font-size: var(--font-size-base);
+    line-height: var(--leading-normal);
+    color: var(--color-text-secondary);
+    text-wrap: pretty;
+
+    animation: fade-in-up var(--duration-slow) var(--ease-decelerate) 80ms both;
+  }
+
+  /* --- the starters -------------------------------------------------------- */
+  .empty__starters {
+    display: grid;
+    /* Two up when there is room for two, one up when there is not — no media
+       query, because the breakpoint is "does 16rem fit twice". */
+    grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+    gap: var(--space-3);
+
+    inline-size: 100%;
+    max-inline-size: var(--width-conversation);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .empty__starter {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    inline-size: 100%;
+    block-size: 100%;
+
+    padding: var(--space-4);
+    border: var(--border-hairline) solid var(--color-border-subtle);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-xs), var(--shadow-glint);
+
+    text-align: start;
+    cursor: pointer;
+
+    transition:
+      var(--transition-colors),
+      var(--transition-transform),
+      var(--transition-shadow);
+    animation: fade-in-up var(--duration-slow) var(--ease-decelerate) both;
+    animation-delay: calc(160ms + var(--stagger-delay));
+  }
+
+  .empty__starter:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-border-brand);
+    box-shadow: var(--shadow-md), var(--shadow-glint);
+  }
+
+  .empty__starter:active {
+    transform: translateY(0);
+  }
+
+  .empty__starter:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  .empty__starter-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+
+    inline-size: 34px;
+    block-size: 34px;
+    border-radius: var(--radius-md);
+    background-color: var(--color-brand-soft);
+    color: var(--color-brand);
+
+    transition: var(--transition-colors), var(--transition-transform);
+  }
+
+  .empty__starter:hover .empty__starter-icon {
+    background-color: var(--color-brand-soft-hover);
+    transform: scale(1.05);
+  }
+
+  .empty__starter-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-0-5);
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  .empty__starter-kind {
+    font-size: var(--font-size-2xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+  }
+
+  .empty__starter-question {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--leading-snug);
+    color: var(--color-text-primary);
+    text-wrap: pretty;
+  }
+
+  .empty__starter-go {
+    flex: none;
+    color: var(--color-text-muted);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: var(--transition-opacity), var(--transition-transform), var(--transition-colors);
+  }
+
+  .empty__starter:hover .empty__starter-go,
+  .empty__starter:focus-visible .empty__starter-go {
+    opacity: 1;
+    transform: translateX(0);
+    color: var(--color-brand);
+  }
+
+  /* --- the disclaimer ------------------------------------------------------ */
+  .empty__foot {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1-5);
+
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+  }
+
+  @media (max-width: 560px) {
+    .empty {
+      padding-block-start: var(--space-6);
+      gap: var(--space-6);
+    }
+
+    .empty__starter-go {
+      display: none;
+    }
+  }
+}

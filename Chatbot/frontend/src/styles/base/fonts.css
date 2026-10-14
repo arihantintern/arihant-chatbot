@@ -1,0 +1,26 @@
+/* ==========================================================================
+   fonts.css — the typeface
+   --------------------------------------------------------------------------
+   Jost, self-hosted from /public/fonts. It is the family the Arihant apps
+   ship, standing in for the licensed Futura PT used in the Figma source.
+
+   It is a *variable* font: one 132 KB file covers weights 100–900, so every
+   weight in the type scale is a real drawn weight, not a browser-synthesised
+   fake — and there is exactly one font request for the whole app.
+
+   `font-display: swap` means text paints immediately in the fallback and
+   swaps when Jost lands; index.html preloads the file so that swap happens
+   in the first moments rather than mid-read.
+   ========================================================================== */
+
+@layer reset {
+  @font-face {
+    font-family: 'Jost';
+    src:
+      url('/fonts/Jost-Variable.ttf') format('truetype-variations'),
+      url('/fonts/Jost-Variable.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+  }
+}

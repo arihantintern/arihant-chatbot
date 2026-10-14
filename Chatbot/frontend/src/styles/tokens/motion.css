@@ -1,0 +1,73 @@
+/* ==========================================================================
+   motion.css — durations, easings, transition presets
+   --------------------------------------------------------------------------
+   Ported from the Arihant GoalPlanner motion spec (lib/core/theme/
+   app_motion.dart). The brand tone is *subtle & premium*: fast, restrained,
+   decelerating easing that supports the content instead of performing for it.
+
+   Rules of thumb:
+     · anything the user triggered directly → `fast`
+     · anything appearing on its own        → `base` or `slow`
+     · never animate `top/left/width` — only transform, opacity, filter and
+       color, so the compositor does the work
+
+   Reduced motion is honoured globally in base/reset.css; individual
+   components should not re-implement that check.
+   ========================================================================== */
+
+@layer tokens {
+  :root {
+    /* --- durations ----------------------------------------------------- */
+    --duration-instant: 90ms; /* checkbox ticks, ripples             */
+    --duration-fast: 150ms; /* press-scale, hover, small toggles   */
+    --duration-base: 220ms; /* the default for entrances/state     */
+    --duration-slow: 320ms; /* larger reveals, progress fills      */
+    --duration-slower: 480ms; /* panels sliding, sheets              */
+    --duration-page: 280ms; /* route transitions                   */
+    --duration-ambient: 2400ms; /* looping ambience: pulses, shimmers  */
+
+    /* --- easings --------------------------------------------------------
+       `standard` is easeOutCubic — the default for almost everything.
+       `emphasized` overshoots slightly; use it sparingly, on a hero element
+       settling into place, never on motion that repeats. */
+    --ease-standard: cubic-bezier(0.215, 0.61, 0.355, 1);
+    --ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
+    --ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    --ease-emphasized: cubic-bezier(0.34, 1.4, 0.64, 1);
+    --ease-spring: cubic-bezier(0.16, 1.06, 0.24, 1);
+
+    /* --- stagger --------------------------------------------------------
+       Per-item delay for cascading list entrances. Components set
+       `--stagger-index` inline and read `--stagger-delay`; the cap keeps
+       long lists from feeling sluggish at the bottom. */
+    --stagger-step: 40ms;
+    --stagger-max: 320ms;
+    --stagger-index: 0;
+    --stagger-delay: min(
+      calc(var(--stagger-index) * var(--stagger-step)),
+      var(--stagger-max)
+    );
+
+    /* --- transition presets ---------------------------------------------
+       Compose these instead of writing `transition:` by hand, so timing
+       stays consistent across the app:
+           transition: var(--transition-colors), var(--transition-transform);
+    */
+    --transition-colors:
+      color var(--duration-fast) var(--ease-standard),
+      background-color var(--duration-fast) var(--ease-standard),
+      border-color var(--duration-fast) var(--ease-standard),
+      fill var(--duration-fast) var(--ease-standard),
+      stroke var(--duration-fast) var(--ease-standard);
+    --transition-opacity: opacity var(--duration-fast) var(--ease-standard);
+    --transition-transform: transform var(--duration-base) var(--ease-spring);
+    --transition-shadow: box-shadow var(--duration-base) var(--ease-standard);
+    --transition-size:
+      width var(--duration-slower) var(--ease-standard),
+      height var(--duration-slower) var(--ease-standard);
+    /* The catch-all. Slightly heavier — prefer a specific preset when you
+       know exactly what changes. */
+    --transition-base: all var(--duration-base) var(--ease-standard);
+  }
+}

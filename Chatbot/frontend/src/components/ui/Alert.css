@@ -1,0 +1,108 @@
+/* ==========================================================================
+   Alert — an inline message about the form or panel it sits in
+   --------------------------------------------------------------------------
+   Tinted surface, matching hairline, and the tone's colour on the icon only.
+   Coloured *text* on a coloured background is where these usually fall down:
+   it either fails contrast or shouts. The body copy stays the normal text
+   colour, and the tone is carried by the border and the glyph.
+   ========================================================================== */
+
+@layer components {
+  .alert {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+
+    padding: var(--space-3) var(--space-3-5);
+    border: var(--border-hairline) solid var(--alert-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--alert-surface);
+
+    font-size: var(--font-size-md);
+    line-height: var(--leading-snug);
+    color: var(--color-text-primary);
+
+    /* Alerts appear in response to something, so they arrive rather than
+       being suddenly present. */
+    animation: fade-in-up var(--duration-base) var(--ease-standard) both;
+  }
+
+  .alert--compact {
+    padding: var(--space-2-5) var(--space-3);
+    font-size: var(--font-size-sm);
+  }
+
+  .alert__icon {
+    color: var(--alert-accent);
+    /* Optically centred on the first line of text rather than on its box. */
+    margin-block-start: 1px;
+  }
+
+  .alert__body {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  .alert__title {
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .alert__title + .alert__text {
+    margin-block-start: var(--space-1);
+    color: var(--color-text-secondary);
+  }
+
+  .alert__text a {
+    color: var(--alert-accent);
+    text-decoration-color: currentColor;
+  }
+
+  .alert__dismiss {
+    flex: none;
+    display: grid;
+    place-items: center;
+    inline-size: var(--control-height-xs);
+    block-size: var(--control-height-xs);
+    margin: calc(var(--space-1) * -1) calc(var(--space-1) * -1) 0 0;
+
+    border-radius: var(--radius-sm);
+    color: var(--color-text-tertiary);
+    transition: var(--transition-colors), var(--transition-transform);
+  }
+
+  .alert__dismiss:hover {
+    background-color: var(--color-surface-hover);
+    color: var(--color-text-primary);
+  }
+
+  .alert__dismiss:active {
+    transform: scale(0.92);
+    transition-duration: var(--duration-instant);
+  }
+
+  /* --- tones ------------------------------------------------------------- */
+  .alert--danger {
+    --alert-surface: var(--color-danger-soft);
+    --alert-border: var(--color-danger-border);
+    --alert-accent: var(--color-danger);
+  }
+
+  .alert--warning {
+    --alert-surface: var(--color-warning-soft);
+    --alert-border: var(--color-warning-border);
+    --alert-accent: var(--color-warning);
+  }
+
+  .alert--success {
+    --alert-surface: var(--color-success-soft);
+    --alert-border: var(--color-success-border);
+    --alert-accent: var(--color-success);
+  }
+
+  .alert--info {
+    --alert-surface: var(--color-info-soft);
+    --alert-border: var(--color-info-border);
+    --alert-accent: var(--color-info);
+  }
+}

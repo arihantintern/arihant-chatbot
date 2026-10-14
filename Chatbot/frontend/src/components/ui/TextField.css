@@ -1,0 +1,209 @@
+/* ==========================================================================
+   TextField
+   --------------------------------------------------------------------------
+   Also the stylesheet for PasswordField, which is a TextField with a toggle
+   in its trailing slot — the field's own look is defined once, here.
+
+   The focus treatment is a brand ring plus a line that grows along the bottom
+   edge from the centre out. It is a small thing that makes typing into this
+   form feel like using an instrument rather than filling in a document.
+   ========================================================================== */
+
+@layer components {
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5);
+    min-inline-size: 0;
+  }
+
+  .field__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+
+  .field__label {
+    /* The label is a click target for the input; making that obvious costs
+       one line. */
+    cursor: pointer;
+    transition: var(--transition-colors);
+  }
+
+  .field:focus-within .field__label {
+    color: var(--color-text-primary);
+  }
+
+  .field[data-invalid] .field__label {
+    color: var(--color-danger);
+  }
+
+  .field__optional {
+    text-transform: lowercase;
+    font-variant: small-caps;
+    letter-spacing: var(--tracking-wide);
+  }
+
+  /* --- the control ------------------------------------------------------- */
+  .field__control {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2-5);
+
+    block-size: var(--control-height-lg);
+    padding-inline: var(--space-3-5);
+    overflow: hidden; /* clips the underline to the rounded corners */
+
+    background-color: var(--color-surface);
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-xs);
+
+    transition:
+      var(--transition-colors),
+      var(--transition-shadow);
+  }
+
+  .field__control:hover {
+    border-color: var(--color-border-hover);
+  }
+
+  /* `:focus-within`, not `:focus` — the ring belongs to the whole control, so
+     it stays lit while the person is using the show-password toggle inside
+     it. And it is drawn here rather than by the input's own outline, which
+     would sit inside the border and look like a mistake. */
+  .field__control:focus-within {
+    border-color: var(--color-border-brand);
+    box-shadow: var(--shadow-xs), 0 0 0 3px var(--color-brand-ring);
+  }
+
+  .field[data-invalid] .field__control {
+    border-color: var(--color-danger-border);
+  }
+
+  .field[data-invalid] .field__control:focus-within {
+    border-color: var(--color-danger);
+    box-shadow: var(--shadow-xs), 0 0 0 3px var(--color-danger-soft);
+  }
+
+  .field__underline {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline: 0;
+    block-size: var(--border-thick);
+    background: var(--gradient-brand);
+
+    transform: scaleX(0);
+    transition: transform var(--duration-base) var(--ease-standard);
+  }
+
+  .field__control:focus-within .field__underline {
+    transform: scaleX(1);
+  }
+
+  .field[data-invalid] .field__underline {
+    background: var(--color-danger);
+  }
+
+  .field__icon {
+    flex: none;
+    color: var(--color-text-tertiary);
+    transition: var(--transition-colors);
+  }
+
+  .field__control:focus-within .field__icon {
+    color: var(--color-brand);
+  }
+
+  .field[data-invalid] .field__control:focus-within .field__icon {
+    color: var(--color-danger);
+  }
+
+  /* --- the input --------------------------------------------------------- */
+  .field__input {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    align-self: stretch;
+
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: var(--font-size-base);
+    color: var(--color-text-primary);
+  }
+
+  /* The control already draws the ring; a second one inside it is noise. */
+  .field__input:focus-visible {
+    outline: none;
+  }
+
+  .field__input:disabled {
+    color: var(--color-text-disabled);
+    cursor: not-allowed;
+  }
+
+  /* An email is read back character by character when something is wrong with
+     it, so its digits and its dots need to be unambiguous. */
+  .field__input[type='email'] {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* A masked password is a row of identical dots — proportional spacing makes
+     counting them impossible, and counting them is the only way to check what
+     you typed. */
+  .field__input[type='password'] {
+    letter-spacing: 0.12em;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-md);
+  }
+
+  /* Chrome paints autofilled inputs a hard yellow that ignores the theme
+     entirely. There is no property to turn it off — the trick is an inset
+     shadow large enough to cover the field, which the autofill styling does
+     not override, plus `background-clip: text` so the caret and glyphs keep
+     the app's own colour. */
+  .field__input:-webkit-autofill,
+  .field__input:-webkit-autofill:hover,
+  .field__input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--color-text-primary);
+    -webkit-box-shadow: 0 0 0 40rem var(--color-surface) inset;
+    caret-color: var(--color-text-primary);
+    /* Long enough that the yellow never gets a frame on screen. */
+    transition: background-color 100000s ease-in-out 0s;
+  }
+
+  .field__trailing {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    /* Sits flush with the field's inner edge, so the toggle's hit area
+       reaches the border instead of leaving a dead 14px strip. */
+    margin-inline-end: calc(var(--space-2) * -1);
+  }
+
+  /* --- messages ---------------------------------------------------------- */
+  .field__message {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1-5);
+
+    font-size: var(--font-size-sm);
+    line-height: var(--leading-snug);
+    color: var(--color-text-tertiary);
+    /* Hangs under the field's text, not under its icon. */
+    padding-inline-start: var(--space-0-5);
+  }
+
+  .field__message--error {
+    color: var(--color-danger);
+    font-weight: var(--font-weight-medium);
+    animation: fade-in-down var(--duration-fast) var(--ease-standard) both;
+  }
+
+  .field__message .icon {
+    flex: none;
+  }
+}

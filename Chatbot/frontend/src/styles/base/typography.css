@@ -1,0 +1,198 @@
+/* ==========================================================================
+   typography.css (base) — the type ROLES
+   --------------------------------------------------------------------------
+   tokens/typography.css says what sizes exist. This file says what they are
+   FOR. Components apply a role class and never set font-size/weight/leading
+   by hand — that is how a 40-screen app keeps one voice.
+
+   Roles are named after the job, not the size (`.t-h2`, not `.t-20px`), so a
+   later decision to make section headings 22px is a one-line change here.
+   ========================================================================== */
+
+@layer base {
+  /* ---------------------------------------------------------- display
+     Hero moments only: the login screen, the empty-conversation greeting,
+     a first-run splash. Fluid, so they hold their proportion on any screen. */
+  .t-display-lg,
+  .t-display,
+  .t-display-sm {
+    font-family: var(--font-display);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tighter);
+    color: var(--color-text-primary);
+    text-wrap: balance;
+  }
+
+  .t-display-lg {
+    font-size: var(--font-size-display-lg);
+  }
+  .t-display {
+    font-size: var(--font-size-display);
+  }
+  .t-display-sm {
+    font-size: var(--font-size-display-sm);
+  }
+
+  /* ---------------------------------------------------------- headings */
+  .t-h1,
+  .t-h2,
+  .t-h3,
+  .t-h4 {
+    font-family: var(--font-display);
+    color: var(--color-text-primary);
+    text-wrap: balance;
+  }
+
+  /* Page title — "My conversations", "Account". */
+  .t-h1 {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  /* Section heading inside a page. */
+  .t-h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-snug);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  /* Card / panel title. */
+  .t-h3 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-snug);
+  }
+
+  /* Dense subsection — a group label inside a card. */
+  .t-h4 {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-snug);
+  }
+
+  /* Small uppercase label above a group. Tracking is what makes this read
+     as an eyebrow rather than as shouting. */
+  .t-eyebrow {
+    font-size: var(--font-size-2xs);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-none);
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+  }
+
+  /* ---------------------------------------------------------- body */
+
+  /* The one-paragraph intro under a heading. */
+  .t-lead {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+    max-inline-size: var(--measure);
+  }
+
+  /* Default running text, including chat messages. */
+  .t-body {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--leading-normal);
+    color: var(--color-text-primary);
+  }
+
+  .t-body-sm {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--leading-normal);
+    color: var(--color-text-secondary);
+  }
+
+  /* Helper text under a field, a card subtitle. */
+  .t-caption {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--leading-snug);
+    color: var(--color-text-secondary);
+  }
+
+  /* Timestamps, counts, "12 sources" — the quietest text in the app. */
+  .t-meta {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--leading-snug);
+    color: var(--color-text-tertiary);
+  }
+
+  /* ---------------------------------------------------------- controls */
+
+  /* Form field labels. */
+  .t-label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--leading-snug);
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-text-secondary);
+  }
+
+  /* Button and menu-item text. */
+  .t-button {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-none);
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .t-button-sm {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-none);
+    letter-spacing: var(--tracking-wide);
+  }
+
+  /* Chips, badges, source pills. */
+  .t-chip {
+    font-size: var(--font-size-2xs);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--leading-none);
+    letter-spacing: var(--tracking-wide);
+  }
+
+  /* ---------------------------------------------------------- numerals
+
+     Anything a person will compare down a column — prices, NAVs, returns,
+     latencies — must be tabular, or the digits jitter between rows. */
+  .t-numeric {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1;
+  }
+
+  .t-amount {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-primary);
+  }
+
+  .t-amount-lg {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tighter);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-primary);
+  }
+
+  /* ---------------------------------------------------------- code */
+  .t-mono {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    line-height: var(--leading-normal);
+    font-variant-ligatures: none;
+  }
+}

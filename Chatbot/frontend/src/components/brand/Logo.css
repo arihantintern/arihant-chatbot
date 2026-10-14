@@ -1,0 +1,54 @@
+/* ==========================================================================
+   Logo.css
+   --------------------------------------------------------------------------
+   The mark's green and violet squares are the brand and never change — they
+   have the contrast to sit on either canvas. The "arihant" wordmark is the
+   one part that must invert: at #434343 it is legible on paper and invisible
+   on a near-black page.
+   ========================================================================== */
+
+@layer components {
+  .logo {
+    display: block;
+    flex-shrink: 0;
+    block-size: auto;
+    /* Each path paints from a variable rather than a hard-coded fill, so the
+       dark-mode override below is a two-line change. */
+    --logo-mark-green: var(--brand-logo-green);
+    --logo-mark-violet: var(--brand-logo-violet);
+    --logo-wordmark: var(--brand-logo-ink);
+    --logo-wordmark-plus: var(--brand-logo-plus);
+  }
+
+  .logo__path--markGreen {
+    fill: var(--logo-mark-green);
+  }
+  .logo__path--markViolet {
+    fill: var(--logo-mark-violet);
+  }
+  .logo__path--wordmark {
+    fill: var(--logo-wordmark);
+  }
+  .logo__path--wordmarkPlus {
+    fill: var(--logo-wordmark-plus);
+  }
+
+  [data-theme='dark'] .logo {
+    /* Near-white, not pure white: #FFF against a #08090F canvas glares. */
+    --logo-wordmark: #eef0f6;
+    /* The mark's greens lift a step so they don't sink into the background,
+       and "plus" brightens to stay distinct from the mark beside it. */
+    --logo-mark-green: var(--green-400);
+    --logo-mark-violet: var(--violet-300);
+    --logo-wordmark-plus: var(--green-400);
+  }
+
+  /* On a brand-coloured or photographic surface, the whole logo goes to a
+     single colour. Set `color` on the parent and the logo follows it. */
+  .logo--mono {
+    --logo-mark-green: currentColor;
+    --logo-mark-violet: currentColor;
+    --logo-wordmark: currentColor;
+    --logo-wordmark-plus: currentColor;
+  }
+}

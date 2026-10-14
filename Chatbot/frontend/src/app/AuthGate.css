@@ -1,0 +1,32 @@
+/* ==========================================================================
+   AuthGate — the boot screen
+   ========================================================================== */
+
+@layer layout {
+  .boot {
+    display: grid;
+    place-items: center;
+    min-block-size: 100dvh;
+    padding: var(--gutter);
+  }
+
+  .boot__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-5);
+  }
+
+  /* Breathing, not spinning: this is a wait of unknown length that is usually
+     over before it is seen, and a spinner would make two hundred milliseconds
+     feel like a stall. */
+  .boot__mark {
+    animation: pulse-soft var(--duration-ambient) var(--ease-in-out) infinite;
+  }
+
+  .boot__label {
+    font-size: var(--font-size-sm);
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-text-tertiary);
+  }
+}

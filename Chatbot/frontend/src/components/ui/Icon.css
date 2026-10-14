@@ -1,0 +1,32 @@
+/* ==========================================================================
+   Icon — outline glyphs that take their colour from the text beside them
+   ========================================================================== */
+
+@layer components {
+  .icon {
+    /* Set by the component from the `size` prop. */
+    inline-size: var(--icon-dimension, var(--icon-size-md));
+    block-size: var(--icon-dimension, var(--icon-size-md));
+
+    /* base/reset.css gives every svg `fill: currentColor`, which is right for
+       a logo and wrong for a stroked icon — it would fill the outlines in. */
+    fill: none;
+    stroke: currentColor;
+    stroke-width: var(--icon-stroke, 1.75);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    /* Never squeezed by a flex parent, and never dragged off the text
+       baseline by the line box it sits in. */
+    flex: none;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  /* Strokes thin out as the glyph grows, or a 24px icon looks heavier than
+     the 16px version of itself. */
+  .icon[data-size='xl'],
+  .icon[data-size='2xl'] {
+    stroke-width: var(--icon-stroke, 1.5);
+  }
+}

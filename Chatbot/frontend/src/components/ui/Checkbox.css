@@ -1,0 +1,116 @@
+/* ==========================================================================
+   Checkbox
+   --------------------------------------------------------------------------
+   The input is positioned under the box it draws — not `display: none`, which
+   would take it out of the tab order and out of the accessibility tree, and
+   not `u-sr-only`, because a real 1px input in the corner of the label is
+   what lets the browser point its own validation and autofill UI at the right
+   place.
+   ========================================================================== */
+
+@layer components {
+  .checkbox {
+    position: relative;
+    display: flex;
+    min-inline-size: 0;
+  }
+
+  .checkbox__input {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 0;
+    inline-size: 1.15em;
+    block-size: 1.15em;
+    margin: 0;
+    transform: translateY(-50%);
+
+    appearance: none;
+    /* Invisible, but present and clickable — the label's `for` sends clicks
+       here anyway, so it never needs to be hit directly. */
+    opacity: 0;
+  }
+
+  .checkbox__label {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2-5);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .checkbox__box {
+    flex: none;
+    display: grid;
+    place-items: center;
+    inline-size: 1.15rem;
+    block-size: 1.15rem;
+    /* Optically aligned with the cap height of the label text, not its box. */
+    margin-block-start: 0.1rem;
+
+    background-color: var(--color-surface);
+    border: var(--border-thin) solid var(--color-border-strong);
+    border-radius: var(--radius-xs);
+    color: var(--color-brand-on);
+
+    transition:
+      var(--transition-colors),
+      var(--transition-transform),
+      var(--transition-shadow);
+  }
+
+  /* The tick is drawn at rest and revealed by the state change, so it has
+     something to animate *from*. */
+  .checkbox__box .icon {
+    transform: scale(0.5);
+    opacity: 0;
+    transition:
+      transform var(--duration-fast) var(--ease-emphasized),
+      var(--transition-opacity);
+  }
+
+  .checkbox__label:hover .checkbox__box {
+    border-color: var(--color-brand);
+  }
+
+  .checkbox__input:checked + .checkbox__label .checkbox__box {
+    background-color: var(--color-brand);
+    background-image: var(--gradient-brand);
+    border-color: transparent;
+    box-shadow: var(--glow-brand-sm);
+  }
+
+  .checkbox__input:checked + .checkbox__label .checkbox__box .icon {
+    transform: none;
+    opacity: 1;
+  }
+
+  .checkbox__input:active + .checkbox__label .checkbox__box {
+    transform: scale(0.92);
+    transition-duration: var(--duration-instant);
+  }
+
+  /* The input is invisible, so its focus ring has to be drawn on the box. */
+  .checkbox__input:focus-visible + .checkbox__label .checkbox__box {
+    outline: var(--focus-ring-width) solid var(--color-focus-ring);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  .checkbox__input:disabled + .checkbox__label {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  .checkbox__text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-0-5);
+    font-size: var(--font-size-md);
+    line-height: var(--leading-snug);
+    color: var(--color-text-secondary);
+    transition: var(--transition-colors);
+  }
+
+  .checkbox__label:hover .checkbox__text {
+    color: var(--color-text-primary);
+  }
+}

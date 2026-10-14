@@ -1,0 +1,138 @@
+/* ==========================================================================
+   ConversationView — the scroll region
+   --------------------------------------------------------------------------
+   This element, not the page, is what scrolls. That is what lets the composer
+   stay pinned without `position: fixed` and its viewport-unit problems on
+   mobile browsers, and what makes the day separator's `position: sticky`
+   stick to the top of the *conversation* rather than the top of the window.
+   ========================================================================== */
+
+@layer layout {
+  .convo {
+    position: relative;
+    flex: 1 1 auto;
+    min-block-size: 0; /* the flex-child rule that actually allows scrolling */
+
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    scrollbar-gutter: stable;
+  }
+
+  .convo__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+
+    inline-size: 100%;
+    max-inline-size: var(--width-conversation);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    padding-block: var(--space-6) var(--space-8);
+  }
+
+  /* The slot exists so a turn and the day separator above it are one unit for
+     the focus ref, without the separator inheriting the turn's own layout. */
+  .convo__slot {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    scroll-margin-block: var(--space-10);
+  }
+
+  .convo__slot > .turn {
+    animation: message-in var(--duration-base) var(--ease-decelerate) both;
+  }
+
+  /* --- jump to latest -----------------------------------------------------
+     Sits inside the scroll region, pinned to its bottom edge, so it is over
+     the conversation and under the composer. */
+  .convo__to-end {
+    position: sticky;
+    inset-block-end: var(--space-4);
+    /* Centred without a transform, so the enter animation can own transform. */
+    margin-inline: auto;
+    margin-block-start: calc(var(--space-10) * -1);
+    inset-inline: 0;
+    inline-size: fit-content;
+    z-index: var(--z-raised);
+
+    display: flex;
+    align-items: center;
+    gap: var(--space-1-5);
+
+    padding: var(--space-2) var(--space-3-5);
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface-glass-strong);
+    backdrop-filter: var(--blur-panel);
+    -webkit-backdrop-filter: var(--blur-panel);
+    box-shadow: var(--shadow-lg);
+
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+
+    /* Hidden by default and not reachable while hidden — `visibility` rather
+       than `display`, so the transition has something to animate. */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px) scale(0.96);
+    transition:
+      opacity var(--duration-fast) var(--ease-standard),
+      transform var(--duration-fast) var(--ease-spring),
+      visibility var(--duration-fast);
+  }
+
+  .convo__to-end[data-visible] {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+  }
+
+  .convo__to-end:hover {
+    color: var(--color-text-primary);
+    border-color: var(--color-border-hover);
+  }
+
+  .convo__to-end:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* --- skeleton ------------------------------------------------------------ */
+  .convo__skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .convo__skeleton-turn {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .convo__skeleton-ask {
+    align-self: flex-end;
+    inline-size: min(58%, 22rem);
+    block-size: 2.75rem;
+    border-radius: var(--radius-xl);
+  }
+
+  .convo__skeleton-reply {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+
+    padding: var(--space-5);
+    border: var(--border-hairline) solid var(--color-border-subtle);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface);
+  }
+
+  .convo__skeleton-line {
+    block-size: 0.75rem;
+    border-radius: var(--radius-xs);
+  }
+}

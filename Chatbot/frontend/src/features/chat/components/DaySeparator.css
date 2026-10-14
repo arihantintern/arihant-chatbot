@@ -1,0 +1,52 @@
+/* ==========================================================================
+   DaySeparator
+   --------------------------------------------------------------------------
+   A centred pill on a hairline rule, sticky at the top of the scroll area.
+   The rule is drawn with the gradient divider token so it fades at both ends
+   rather than butting into the column edges.
+   ========================================================================== */
+
+@layer components {
+  .day {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: var(--z-sticky);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Padding rather than margin, so the frosted background covers the gap a
+       turn scrolls through rather than leaving a transparent band. */
+    padding-block: var(--space-3);
+  }
+
+  /* The rule, behind the label. */
+  .day::before {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: 50%;
+    block-size: 1px;
+    background-image: var(--gradient-divider);
+  }
+
+  .day__label {
+    position: relative;
+
+    padding: var(--space-1) var(--space-3);
+    border: var(--border-hairline) solid var(--color-border-subtle);
+    border-radius: var(--radius-full);
+
+    background-color: var(--color-surface-glass-strong);
+    backdrop-filter: var(--blur-sm);
+    -webkit-backdrop-filter: var(--blur-sm);
+
+    font-size: var(--font-size-2xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+    white-space: nowrap;
+  }
+}

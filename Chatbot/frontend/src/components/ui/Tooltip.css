@@ -1,0 +1,113 @@
+/* ==========================================================================
+   Tooltip
+   --------------------------------------------------------------------------
+   Four sides, one bubble. The side is chosen with `data-side` and each case
+   sets only the two properties that differ — position and the direction the
+   bubble drifts in as it appears — so there is one set of visual rules to
+   keep consistent rather than four.
+   ========================================================================== */
+
+@layer components {
+  .tooltip {
+    position: relative;
+    display: inline-flex;
+    /* The bubble must not be clipped by the trigger's own bounds. */
+    overflow: visible;
+  }
+
+  .tooltip__bubble {
+    position: absolute;
+    z-index: var(--z-tooltip);
+
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    white-space: nowrap;
+
+    padding: var(--space-1-5) var(--space-2-5);
+    border-radius: var(--radius-sm);
+    border: var(--border-hairline) solid var(--color-border);
+    background-color: var(--color-surface-overlay);
+    box-shadow: var(--shadow-lg);
+
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-text-primary);
+
+    /* Hidden in a way that cannot be interacted with or read out: no hit
+       area, no accessible presence, and nothing for a stray click to land
+       on when it happens to be under the pointer. */
+    opacity: 0;
+    pointer-events: none;
+    transform: var(--tooltip-rest);
+    transition:
+      opacity var(--duration-fast) var(--ease-standard),
+      transform var(--duration-fast) var(--ease-standard);
+  }
+
+  /* Shown on hover *and* on keyboard focus. `:focus-visible` rather than
+     `:focus`, so clicking a rail button does not leave its tooltip stuck open
+     over the panel the click just opened. */
+  .tooltip:hover .tooltip__bubble,
+  .tooltip:focus-within .tooltip__bubble {
+    opacity: 1;
+    transform: var(--tooltip-shown, none);
+  }
+
+  .tooltip:has(:focus:not(:focus-visible)) .tooltip__bubble {
+    opacity: 0;
+  }
+
+  /* --- sides -------------------------------------------------------------- */
+  .tooltip[data-side='end'] .tooltip__bubble {
+    inset-inline-start: calc(100% + var(--space-3));
+    inset-block-start: 50%;
+    --tooltip-rest: translateY(-50%) translateX(-4px);
+    --tooltip-shown: translateY(-50%);
+  }
+
+  .tooltip[data-side='start'] .tooltip__bubble {
+    inset-inline-end: calc(100% + var(--space-3));
+    inset-block-start: 50%;
+    --tooltip-rest: translateY(-50%) translateX(4px);
+    --tooltip-shown: translateY(-50%);
+  }
+
+  .tooltip[data-side='top'] .tooltip__bubble {
+    inset-block-end: calc(100% + var(--space-2));
+    inset-inline-start: 50%;
+    --tooltip-rest: translateX(-50%) translateY(4px);
+    --tooltip-shown: translateX(-50%);
+  }
+
+  .tooltip[data-side='bottom'] .tooltip__bubble {
+    inset-block-start: calc(100% + var(--space-2));
+    inset-inline-start: 50%;
+    --tooltip-rest: translateX(-50%) translateY(-4px);
+    --tooltip-shown: translateX(-50%);
+  }
+
+  /* --- the key hint ------------------------------------------------------- */
+  .tooltip__key {
+    font-family: var(--font-sans);
+    font-size: var(--font-size-3xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-text-tertiary);
+
+    padding: 1px var(--space-1-5);
+    border-radius: var(--radius-xs);
+    background-color: var(--color-surface-sunken);
+    border: var(--border-hairline) solid var(--color-border-subtle);
+  }
+
+  /* A tooltip is a hover affordance, and a touch device has no hover. Rather
+     than flashing on tap, it is removed entirely — the control's own
+     accessible name is doing the work there. */
+  @media (hover: none) {
+    .tooltip__bubble {
+      display: none;
+    }
+  }
+}

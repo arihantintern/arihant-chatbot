@@ -1,0 +1,81 @@
+/* ==========================================================================
+   typography.css — type primitives
+   --------------------------------------------------------------------------
+   Families, the size ramp, weights, leading and tracking. The *roles* built
+   from these (.t-display, .t-body, …) live in base/typography.css so that
+   this file stays a pure token sheet.
+
+   Jost is the family the Arihant apps ship — it stands in for the licensed
+   Futura PT used in the Figma source. It is a variable font, so any weight
+   from 100–900 is a real weight, not a synthesised one.
+   ========================================================================== */
+
+@layer tokens {
+  :root {
+    /* --- families ------------------------------------------------------ */
+    --font-sans:
+      'Jost', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      'Helvetica Neue', Arial, sans-serif;
+    --font-display: var(--font-sans);
+    --font-mono:
+      'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo,
+      Consolas, 'Liberation Mono', monospace;
+
+    /* --- size ramp -----------------------------------------------------
+       rem-based so the whole UI scales with the user's browser setting.
+       15px is the body size: comfortable for the long prose a chat answer
+       produces, without making dense tables feel oversized. */
+    --font-size-3xs: 0.625rem; /* 10px — legal, superscript citations   */
+    --font-size-2xs: 0.6875rem; /* 11px — chips, badges                  */
+    --font-size-xs: 0.75rem; /* 12px — meta, timestamps               */
+    --font-size-sm: 0.8125rem; /* 13px — captions, helper text          */
+    --font-size-md: 0.875rem; /* 14px — dense UI, table cells          */
+    --font-size-base: 0.9375rem; /* 15px — body copy, chat messages       */
+    --font-size-lg: 1.0625rem; /* 17px — lead paragraphs                */
+    --font-size-xl: 1.25rem; /* 20px — card / section titles          */
+    --font-size-2xl: 1.5rem; /* 24px — page titles                    */
+    --font-size-3xl: 1.875rem; /* 30px                                  */
+    --font-size-4xl: 2.375rem; /* 38px                                  */
+    --font-size-5xl: 3rem; /* 48px                                  */
+
+    /* Fluid display sizes for hero / auth / empty-state moments. */
+    --font-size-display-sm: clamp(1.75rem, 1.25rem + 2vw, 2.375rem);
+    --font-size-display: clamp(2.25rem, 1.5rem + 3.2vw, 3.25rem);
+    --font-size-display-lg: clamp(2.75rem, 1.6rem + 5vw, 4.25rem);
+
+    /* --- weights -------------------------------------------------------
+       Jost runs light. 400 is body, 500 is the workhorse for UI labels,
+       600/700 carry headings. 800+ only for the display sizes. */
+    --font-weight-light: 300;
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+
+    /* --- leading -------------------------------------------------------- */
+    --leading-none: 1;
+    --leading-tight: 1.15;
+    --leading-snug: 1.3;
+    --leading-normal: 1.55;
+    --leading-relaxed: 1.7;
+    --leading-loose: 1.9;
+
+    /* --- tracking -------------------------------------------------------
+       Geometric sans wants negative tracking as it gets bigger, and
+       generous positive tracking when it gets small and uppercase. */
+    --tracking-tighter: -0.022em;
+    --tracking-tight: -0.012em;
+    --tracking-normal: 0;
+    --tracking-wide: 0.02em;
+    --tracking-wider: 0.06em;
+    --tracking-widest: 0.14em; /* uppercase eyebrows / section labels */
+
+    /* --- measure -------------------------------------------------------
+       Line length caps. Chat answers are the reason this file exists: an
+       unbounded paragraph across a 1600px screen is unreadable. */
+    --measure-narrow: 46ch;
+    --measure: 68ch;
+    --measure-wide: 82ch;
+  }
+}

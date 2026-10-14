@@ -1,0 +1,71 @@
+/* ==========================================================================
+   Avatar
+   --------------------------------------------------------------------------
+   The tint is one colour from the data-series scale, chosen by the component
+   from the account id. `color-mix` gives the soft fill and the readable text
+   colour from that single hue, so adding a seventh series colour later needs
+   no work here.
+   ========================================================================== */
+
+@layer components {
+  .avatar {
+    --avatar-hue: var(--color-series-1);
+
+    flex: none;
+    display: grid;
+    place-items: center;
+    inline-size: var(--avatar-dimension);
+    block-size: var(--avatar-dimension);
+
+    border-radius: var(--radius-full);
+    /* A tint of the hue rather than the hue itself: a saturated circle beside
+       a name is a badge, and this is a person. */
+    background-color: color-mix(in oklab, var(--avatar-hue) 18%, var(--color-surface));
+    border: var(--border-hairline) solid
+      color-mix(in oklab, var(--avatar-hue) 34%, transparent);
+    color: color-mix(in oklab, var(--avatar-hue) 78%, var(--color-text-primary));
+
+    font-size: var(--avatar-font-size);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    line-height: 1;
+    text-transform: uppercase;
+    user-select: none;
+  }
+
+  /* The series index the component derives from the account, resolved to a
+     token here so the palette stays entirely in CSS. */
+  .avatar[data-series='1'] {
+    --avatar-hue: var(--color-series-1);
+  }
+  .avatar[data-series='2'] {
+    --avatar-hue: var(--color-series-2);
+  }
+  .avatar[data-series='3'] {
+    --avatar-hue: var(--color-series-3);
+  }
+  .avatar[data-series='4'] {
+    --avatar-hue: var(--color-series-4);
+  }
+  .avatar[data-series='5'] {
+    --avatar-hue: var(--color-series-5);
+  }
+  .avatar[data-series='6'] {
+    --avatar-hue: var(--color-series-6);
+  }
+
+  .avatar--sm {
+    --avatar-dimension: var(--avatar-size-sm);
+    --avatar-font-size: var(--font-size-2xs);
+  }
+
+  .avatar--md {
+    --avatar-dimension: var(--avatar-size-md);
+    --avatar-font-size: var(--font-size-xs);
+  }
+
+  .avatar--lg {
+    --avatar-dimension: var(--avatar-size-lg);
+    --avatar-font-size: var(--font-size-base);
+  }
+}

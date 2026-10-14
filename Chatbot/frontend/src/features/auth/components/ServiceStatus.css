@@ -1,0 +1,92 @@
+/* ==========================================================================
+   ServiceStatus
+   ========================================================================== */
+
+@layer components {
+  .service-status {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-tertiary);
+  }
+
+  .service-status__row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .service-status__dot {
+    flex: none;
+    inline-size: 7px;
+    block-size: 7px;
+    border-radius: var(--radius-full);
+    background-color: var(--status-color, var(--color-text-muted));
+    /* The halo is what makes a 7px dot legible as a state rather than as a
+       full stop. */
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--status-color, transparent) 22%, transparent);
+    transition: var(--transition-colors);
+  }
+
+  .service-status__label {
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .service-status__detail {
+    /* Indented to sit under the label, past the dot. */
+    padding-inline-start: calc(7px + var(--space-2));
+    color: var(--color-text-secondary);
+    max-inline-size: var(--measure-narrow);
+  }
+
+  .service-status__retry {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-0-5) var(--space-2);
+
+    border-radius: var(--radius-full);
+    border: var(--border-hairline) solid var(--color-border);
+    font-size: var(--font-size-2xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+    transition: var(--transition-colors), var(--transition-transform);
+  }
+
+  .service-status__retry:hover {
+    background-color: var(--color-surface-hover);
+    border-color: var(--color-border-hover);
+    color: var(--color-text-primary);
+  }
+
+  .service-status__retry:active {
+    transform: scale(0.95);
+    transition-duration: var(--duration-instant);
+  }
+
+  /* --- states ------------------------------------------------------------ */
+  .service-status[data-status='checking'] .service-status__dot {
+    --status-color: var(--color-text-muted);
+    animation: pulse-soft var(--duration-ambient) var(--ease-in-out) infinite;
+  }
+
+  .service-status[data-status='ready'] {
+    --status-color: var(--color-success);
+  }
+
+  .service-status[data-status='degraded'] {
+    --status-color: var(--color-warning);
+  }
+
+  .service-status[data-status='offline'] {
+    --status-color: var(--color-danger);
+  }
+
+  /* A problem is worth reading; "online" is not. */
+  .service-status[data-status='degraded'] .service-status__label,
+  .service-status[data-status='offline'] .service-status__label {
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-medium);
+  }
+}

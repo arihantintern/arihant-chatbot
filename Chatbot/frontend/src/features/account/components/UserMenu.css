@@ -1,0 +1,206 @@
+/* ==========================================================================
+   UserMenu
+   ========================================================================== */
+
+@layer components {
+  .user-menu {
+    position: relative;
+  }
+
+  /* --- the trigger -------------------------------------------------------- */
+  .user-menu__trigger {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2-5);
+
+    max-inline-size: 15rem;
+    padding: var(--space-1) var(--space-2-5) var(--space-1) var(--space-1);
+    border: var(--border-hairline) solid transparent;
+    border-radius: var(--radius-full);
+
+    text-align: start;
+    transition: var(--transition-colors), var(--transition-shadow);
+  }
+
+  .user-menu__trigger:hover {
+    background-color: var(--color-surface-hover);
+    border-color: var(--color-border-subtle);
+  }
+
+  .user-menu__trigger[aria-expanded='true'] {
+    background-color: var(--color-surface-active);
+    border-color: var(--color-border);
+  }
+
+  .user-menu__identity {
+    display: flex;
+    flex-direction: column;
+    min-inline-size: 0;
+    gap: 1px;
+  }
+
+  .user-menu__name {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-text-primary);
+  }
+
+  .user-menu__email {
+    font-size: var(--font-size-2xs);
+    line-height: var(--leading-tight);
+    color: var(--color-text-tertiary);
+  }
+
+  .user-menu__chevron {
+    color: var(--color-text-tertiary);
+    transition: var(--transition-transform), var(--transition-colors);
+  }
+
+  .user-menu__trigger[aria-expanded='true'] .user-menu__chevron {
+    transform: rotate(180deg);
+    color: var(--color-text-primary);
+  }
+
+  /* On a narrow screen the avatar alone is the trigger — a name and an email
+     beside it would eat the whole top bar. */
+  @media (max-width: 640px) {
+    .user-menu__identity,
+    .user-menu__chevron {
+      display: none;
+    }
+
+    .user-menu__trigger {
+      padding: var(--space-1);
+    }
+  }
+
+  /* --- the panel ---------------------------------------------------------- */
+  .user-menu__panel {
+    position: absolute;
+    inset-block-start: calc(100% + var(--space-2));
+    /* Anchored to the end edge, so it opens inward from a top-bar control
+       instead of off the side of the viewport. */
+    inset-inline-end: 0;
+    z-index: var(--z-dropdown);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    inline-size: min(19rem, calc(100vw - var(--space-8)));
+    padding: var(--space-4);
+
+    background-color: var(--color-surface-overlay);
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg), var(--shadow-glint);
+
+    /* Grows from the corner it is anchored to. */
+    transform-origin: top right;
+  }
+
+  .user-menu__panel:focus-visible {
+    /* It is focused programmatically on open; a ring around the whole panel
+       would look like an error. The controls inside get their own. */
+    outline: none;
+  }
+
+  .user-menu__header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-inline-size: 0;
+  }
+
+  .user-menu__header-text {
+    min-inline-size: 0;
+  }
+
+  .user-menu__header-name {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-text-primary);
+  }
+
+  .user-menu__header-email {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-tertiary);
+  }
+
+  .user-menu__badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .user-menu__badge {
+    padding: var(--space-0-5) var(--space-2);
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface-sunken);
+    border: var(--border-hairline) solid var(--color-border-subtle);
+
+    font-size: var(--font-size-2xs);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-text-secondary);
+  }
+
+  /* An admin can read everyone's transcripts. Worth seeing at a glance which
+     kind of account you are in. */
+  .user-menu__badge[data-role='admin'] {
+    background-color: var(--color-accent-soft);
+    border-color: var(--color-border-accent);
+    color: var(--color-text-accent);
+  }
+
+  .user-menu__meta {
+    font-size: var(--font-size-2xs);
+    color: var(--color-text-muted);
+  }
+
+  .user-menu__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+
+  .user-menu__row-label {
+    font-size: var(--font-size-md);
+    color: var(--color-text-secondary);
+  }
+
+  /* --- actions ------------------------------------------------------------ */
+  .user-menu__action {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2-5);
+
+    /* Bleeds into the panel's padding so the hover fill spans the full width
+       of the panel rather than floating in the middle of it. */
+    margin-inline: calc(var(--space-2) * -1);
+    padding: var(--space-2-5) var(--space-2);
+    border-radius: var(--radius-md);
+
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    text-align: start;
+    color: var(--color-text-primary);
+    transition: var(--transition-colors);
+  }
+
+  .user-menu__action:hover {
+    background-color: var(--color-surface-hover);
+  }
+
+  .user-menu__action--danger {
+    color: var(--color-danger);
+  }
+
+  .user-menu__action--danger:hover {
+    background-color: var(--color-danger-soft);
+  }
+}
