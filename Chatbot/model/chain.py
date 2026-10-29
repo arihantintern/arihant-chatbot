@@ -68,7 +68,7 @@ from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langchain_core.runnables import (
     RunnableBranch, RunnableLambda, RunnableParallel, RunnablePassthrough,
 )
-from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
 
 import history
 import web
@@ -82,8 +82,17 @@ from config import (
 from retrieve import dates_in, format_docs, search
 from store import get_index
 
-small = ChatOpenAI(model=SMALL_MODEL, temperature=0)
-model = ChatOpenAI(model=CHAT_MODEL, temperature=CHAT_TEMPERATURE)
+small = ChatOllama(
+    model="llama3.2:1b",
+    base_url="http://localhost:11434",
+    temperature=0
+)
+
+model = ChatOllama(
+    model="llama3.2:1b",
+    base_url="http://localhost:11434",
+    temperature=CHAT_TEMPERATURE
+)
 parser = StrOutputParser()
 prompt = PromptTemplate.from_template
 

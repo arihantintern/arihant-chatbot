@@ -26,6 +26,15 @@ block the event loop for everybody else's. The per-request session lives in a
 ContextVar (see history.py) which anyio carries into that thread for us.
 """
 from __future__ import annotations
+from fastapi.responses import FileResponse
+
+import os
+import time
+from fastapi import FastAPI
+
+import hashlib
+import secrets
+from datetime import datetime, timedelta,timezone
 
 import sys
 import threading
@@ -380,9 +389,120 @@ def disable(email: str, disabled: bool = True, me: dict = Depends(admin)) -> Non
     except auth.AuthError as e:
         raise _fail(e) from e
 
+@app.get("/chat-ui", include_in_schema=False)
+def chat_ui():
+    return FileResponse("static/chat.html")
+
+from pydantic import BaseModel
+
+class ChatAPIRequest(BaseModel):
+    question: str
+
+@app.post("/chat-api")
+def chat_api(
+    request: ChatAPIRequest,
+    user: dict = Depends(account)
+):
+    body = Ask(
+        question=request.question,
+        conversation_id=None
+    )
+
+    return chat(body=body, user=user)
+
+from pydantic import BaseModel
+from datetime import datetime, timedelta, timezone
+import secrets
+
+class ShareAccessRequest(BaseModel):
+    minutes: int = 60
+
+create_chat_access_tokens = {}
+
+@app.post("/admin/create-chat-access")
+def create_chat_access(
+    body: ShareAccessRequest,
+    user: dict = Depends(admin)
+):
+    if not 1 <= body.minutes <= 1440:
+        raise HTTPException(
+            status_code=400,
+            detail="Duration must be 1 to 1440 minutes"
+        )
+
+    access_token = secrets.token_urlsafe(32)
+
+    token_hash = hashlib.sha256(
+        access_token.encode()
+    ).hexdigest()
+
+    expires_at = datetime.now(timezone.utc) + timedelta(
+        minutes=body.minutes
+    )
+
+    create_chat_access_tokens[token_hash] = expires_at
+
+    return {
+        "access_token": access_token,
+        "expires_at": expires_at.isoformat(),
+        "message": "Access credential generated"
+    }
+
+from fastapi import Header
+
+def verify_chat_access(
+    x_chat_token: str = Header(default="")
+):
+    if not x_chat_token:
+        raise HTTPException(
+            status_code=401,
+            detail="Chat access token required"
+        )
+
+    token_hash = hashlib.sha256(
+        x_chat_token.encode()
+    ).hexdigest()
+
+    expires_at = create_chat_access_tokens.get(token_hash)
+
+    if expires_at is None:
+        raise HTTPException(
+            status_code=403,
+            detail="Invalid access token"
+        )
+
+    if datetime.now(timezone.utc) >= expires_at:
+        create_chat_access_tokens.pop(token_hash, None)
+        raise HTTPException(
+            status_code=403,
+            detail="Access token expired"
+        )
+
+    return True
+
+@app.post("/shared-chat")
+def shared_chat(
+    body: ChatAPIRequest,
+    verified: bool = Depends(verify_chat_access)
+):
+    chat_body = Ask(
+        question=body.question,
+        conversation_id=None
+    )
+
+    return chat(
+        body=chat_body,
+        user={
+            "_id": "shared-chat",
+            "email": "shared@local.invalid",
+            "role": "user"
+        }
+    )
 
 if __name__ == "__main__":
     import uvicorn
 
     print(f"tokens last {JWT_TTL_MIN} minutes -- http://127.0.0.1:8000/docs")
     uvicorn.run("api:app", host="127.0.0.1", port=8000, reload=True)
+
+        
